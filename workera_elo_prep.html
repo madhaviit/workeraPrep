@@ -1,0 +1,2132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workera ELO — Machine Learning Fundamentals Prep Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d10;
+  --surface: #13131a;
+  --surface2: #1a1a24;
+  --border: #2a2a3a;
+  --accent: #6ee7b7;
+  --accent2: #f59e0b;
+  --accent3: #818cf8;
+  --accent4: #f87171;
+  --accent5: #38bdf8;
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --card-bg: #16161f;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Lora', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.75;
+  min-height: 100vh;
+}
+
+/* ─── NOISE OVERLAY ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ─── NAV SIDEBAR ─── */
+#sidebar {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 260px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 100;
+  padding: 24px 0;
+  transition: transform 0.3s ease;
+}
+
+#sidebar::-webkit-scrollbar { width: 4px; }
+#sidebar::-webkit-scrollbar-track { background: transparent; }
+#sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.sidebar-logo {
+  padding: 0 20px 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.sidebar-logo .badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.sidebar-logo h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.nav-section-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 12px 20px 6px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 20px;
+  font-family: 'Syne', sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  transition: all 0.2s;
+  border-left: 2px solid transparent;
+  line-height: 1.4;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--text);
+  background: rgba(110,231,183,0.06);
+  border-left-color: var(--accent);
+}
+
+.nav-link .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--border);
+}
+
+.nav-link:hover .dot { background: var(--accent); }
+
+/* ─── MAIN CONTENT ─── */
+#main {
+  margin-left: 260px;
+  max-width: 1100px;
+  padding: 48px 56px;
+}
+
+/* ─── HERO ─── */
+.hero {
+  padding: 60px 0 48px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 56px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(110,231,183,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.hero-badge::before {
+  content: '';
+  display: inline-block;
+  width: 20px; height: 2px;
+  background: var(--accent);
+}
+
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+.hero h1 span { color: var(--accent); }
+
+.hero-desc {
+  max-width: 680px;
+  color: #94a3b8;
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 32px;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent2);
+  line-height: 1;
+}
+
+.stat-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+/* ─── WORKERA INFO BOX ─── */
+.info-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent3);
+  border-radius: 8px;
+  padding: 24px 28px;
+  margin-bottom: 40px;
+}
+
+.info-box h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent3);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-box p {
+  font-size: 14.5px;
+  color: #94a3b8;
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+
+.info-box p:last-child { margin-bottom: 0; }
+
+/* ─── SECTION ─── */
+.section {
+  margin-bottom: 80px;
+  scroll-margin-top: 32px;
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 36px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-top: 4px;
+  flex-shrink: 0;
+  letter-spacing: 0.1em;
+}
+
+.section-title-block h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+
+.section-title-block .subtitle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ─── SUBSECTION ─── */
+.subsection {
+  margin-bottom: 56px;
+  scroll-margin-top: 32px;
+}
+
+.subsection-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent2);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.subsection-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--border), transparent);
+}
+
+/* ─── CONCEPT CARD ─── */
+.concept-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.concept-card h4 {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent5);
+  margin-bottom: 12px;
+}
+
+.concept-card p {
+  font-size: 14.5px;
+  color: #94a3b8;
+  line-height: 1.85;
+}
+
+/* ─── QUESTION CARDS ─── */
+.question-block {
+  margin-bottom: 28px;
+}
+
+.q-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.q-tag.mcq    { background: rgba(99,102,241,0.15); color: var(--accent3); border: 1px solid rgba(99,102,241,0.25); }
+.q-tag.code   { background: rgba(110,231,183,0.12); color: var(--accent);  border: 1px solid rgba(110,231,183,0.25); }
+.q-tag.subjective { background: rgba(245,158,11,0.12); color: var(--accent2); border: 1px solid rgba(245,158,11,0.25); }
+.q-tag.classify   { background: rgba(248,113,113,0.12); color: var(--accent4); border: 1px solid rgba(248,113,113,0.25); }
+.q-tag.short  { background: rgba(56,189,248,0.12); color: var(--accent5); border: 1px solid rgba(56,189,248,0.25); }
+
+.q-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.q-prompt {
+  padding: 18px 22px 14px;
+  font-size: 15px;
+  color: var(--text);
+  font-family: 'Lora', serif;
+  line-height: 1.75;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+}
+
+.q-prompt strong {
+  color: var(--accent2);
+  font-style: italic;
+}
+
+.q-options {
+  padding: 14px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #94a3b8;
+  border: 1px solid var(--border);
+  cursor: default;
+  transition: all 0.2s;
+  line-height: 1.6;
+}
+
+.opt .opt-key {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  flex-shrink: 0;
+  margin-top: 1px;
+  width: 16px;
+}
+
+.opt.correct {
+  background: rgba(110,231,183,0.08);
+  border-color: rgba(110,231,183,0.3);
+  color: var(--text);
+}
+.opt.correct .opt-key { color: var(--accent); }
+
+.opt:not(.correct):hover {
+  border-color: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.02);
+}
+
+.answer-reveal {
+  border-top: 1px solid var(--border);
+  padding: 14px 22px;
+}
+
+.answer-reveal summary {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.answer-reveal summary::before {
+  content: '▶';
+  font-size: 9px;
+  transition: transform 0.2s;
+}
+
+.answer-reveal[open] summary::before { transform: rotate(90deg); }
+
+.answer-reveal summary:hover { color: var(--accent); }
+
+.answer-body {
+  margin-top: 14px;
+  font-size: 14px;
+  color: #94a3b8;
+  line-height: 1.85;
+  padding-left: 2px;
+}
+
+.answer-body strong { color: var(--accent); font-style: normal; }
+
+.answer-body .key-insight {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(110,231,183,0.06);
+  border-left: 2px solid var(--accent);
+  padding: 10px 14px;
+  border-radius: 0 6px 6px 0;
+  margin-top: 12px;
+  font-size: 13.5px;
+}
+
+/* ─── CODE BLOCK ─── */
+pre, code {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.code-block {
+  background: #0a0a0f;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+
+.code-lang {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.code-block pre {
+  padding: 16px 18px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #c9d1d9;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.kw  { color: #ff7b72; }   /* keywords */
+.fn  { color: #d2a8ff; }   /* functions */
+.st  { color: #a5d6ff; }   /* strings */
+.cm  { color: #8b949e; font-style: italic; } /* comments */
+.nm  { color: #79c0ff; }   /* numbers */
+.tp  { color: #ffa657; }   /* types/classes */
+.op  { color: #ff7b72; }   /* operators */
+.ident { color: #cae8ff; } /* identifiers */
+.acc { color: var(--accent); } /* accent */
+
+/* ─── SUBJECTIVE / SHORT ANSWER ─── */
+.subj-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.subj-q {
+  padding: 18px 22px;
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1.75;
+  border-bottom: 1px solid var(--border);
+}
+
+.subj-answer {
+  padding: 18px 22px;
+  font-size: 14px;
+  color: #94a3b8;
+  line-height: 1.85;
+}
+
+.subj-answer h5 {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.subj-answer ul, .subj-answer ol {
+  padding-left: 18px;
+  margin-top: 8px;
+}
+
+.subj-answer li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.subj-answer li strong { color: var(--accent); }
+
+/* ─── FORMULA BOX ─── */
+.formula {
+  background: #0e0e16;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin: 10px 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--accent3);
+  line-height: 1.8;
+  overflow-x: auto;
+}
+
+/* ─── DIFFICULTY BADGE ─── */
+.difficulty {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.difficulty.easy   { background: rgba(110,231,183,0.1); color: var(--accent); }
+.difficulty.medium { background: rgba(245,158,11,0.1);  color: var(--accent2); }
+.difficulty.hard   { background: rgba(248,113,113,0.1); color: var(--accent4); }
+
+/* ─── TABLE ─── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  margin: 14px 0;
+}
+
+.data-table th {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 10px 14px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.data-table td {
+  padding: 10px 14px;
+  color: #94a3b8;
+  border-bottom: 1px solid rgba(42,42,58,0.5);
+  line-height: 1.6;
+}
+
+.data-table td strong { color: var(--text); }
+
+.data-table tr:hover td { background: rgba(255,255,255,0.015); }
+
+/* ─── GRID LAYOUT ─── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  #sidebar { transform: translateX(-100%); }
+  #main { margin-left: 0; padding: 32px 24px; }
+  .two-col { grid-template-columns: 1fr; }
+}
+
+/* ─── PROGRESS INDICATOR ─── */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(to right, var(--accent), var(--accent3));
+  z-index: 9998;
+  transition: width 0.1s;
+  width: 0%;
+}
+
+/* ─── TOC TOOLTIP ─── */
+.toc-level {
+  padding-left: 16px;
+  border-left: 1px solid var(--border);
+  margin-left: 26px;
+}
+
+.toc-level .nav-link {
+  font-size: 11.5px;
+  padding: 5px 14px;
+}
+
+/* ─── PILL LIST ─── */
+.pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.pill {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: var(--surface2);
+}
+
+/* ─── CALLOUT ─── */
+.callout {
+  display: flex;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 8px;
+  margin: 16px 0;
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.callout.tip { background: rgba(110,231,183,0.06); border: 1px solid rgba(110,231,183,0.2); }
+.callout.warn { background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.2); }
+.callout.info { background: rgba(129,140,248,0.06); border: 1px solid rgba(129,140,248,0.2); }
+
+.callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.callout-text { color: #94a3b8; }
+.callout-text strong { color: var(--text); }
+
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <span class="badge">Workera ELO Prep</span>
+    <h2>Machine Learning Fundamentals</h2>
+  </div>
+
+  <div class="nav-section-title">Overview</div>
+  <a class="nav-link" href="#about-workera"><span class="dot"></span>About Workera ELO</a>
+  <a class="nav-link" href="#scoring"><span class="dot"></span>Scoring & CAT System</a>
+  <a class="nav-link" href="#strategy"><span class="dot"></span>Test Strategy</a>
+
+  <div class="nav-section-title">Track A — Foundational</div>
+  <a class="nav-link" href="#linear-regression"><span class="dot"></span>Linear Regression</a>
+  <div class="toc-level">
+    <a class="nav-link" href="#lr-gradient-descent">Gradient Descent</a>
+    <a class="nav-link" href="#lr-metrics">Performance Metrics</a>
+    <a class="nav-link" href="#lr-preprocessing">Data Preprocessing</a>
+  </div>
+  <a class="nav-link" href="#logistic-regression"><span class="dot"></span>Logistic Regression</a>
+  <div class="toc-level">
+    <a class="nav-link" href="#logreg-metrics">Classification Metrics</a>
+    <a class="nav-link" href="#logreg-boundary">Decision Boundary</a>
+    <a class="nav-link" href="#logreg-impl">Binary Classification</a>
+  </div>
+
+  <div class="nav-section-title">Track B — Intermediate</div>
+  <a class="nav-link" href="#neural-networks"><span class="dot"></span>Neural Networks</a>
+  <div class="toc-level">
+    <a class="nav-link" href="#nn-design">Network Design</a>
+    <a class="nav-link" href="#nn-training">Training & Tuning</a>
+    <a class="nav-link" href="#nn-frameworks">Frameworks</a>
+  </div>
+  <a class="nav-link" href="#decision-trees"><span class="dot"></span>Trees & Ensembles</a>
+  <div class="toc-level">
+    <a class="nav-link" href="#dt-build">Decision Trees</a>
+    <a class="nav-link" href="#ensemble-methods">Ensemble Methods</a>
+    <a class="nav-link" href="#bias-variance">Bias–Variance</a>
+  </div>
+
+  <div class="nav-section-title">Track C — Advanced</div>
+  <a class="nav-link" href="#unsupervised"><span class="dot"></span>Unsupervised Learning</a>
+  <div class="toc-level">
+    <a class="nav-link" href="#clustering">Clustering</a>
+    <a class="nav-link" href="#anomaly">Anomaly Detection</a>
+    <a class="nav-link" href="#unsup-eval">Evaluation</a>
+  </div>
+  <a class="nav-link" href="#recommenders"><span class="dot"></span>Recommender Systems</a>
+  <div class="toc-level">
+    <a class="nav-link" href="#collab-filter">Collaborative Filtering</a>
+    <a class="nav-link" href="#content-filter">Content-Based</a>
+    <a class="nav-link" href="#rec-metrics">RecSys Metrics</a>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">Workera ELO Assessment Prep</div>
+    <h1>Machine Learning<br><span>Fundamentals</span> Prep Guide</h1>
+    <p class="hero-desc">
+      A comprehensive, exam-calibrated preparation document covering every skill node in the ML Fundamentals track. Each section maps directly to a Workera ELO sub-skill, with MCQs, coding challenges, subjective reasoning questions, and detailed answers modelled on the adaptive CAT format.
+    </p>
+    <div class="hero-stats">
+      <div class="stat-item"><span class="stat-num">6</span><span class="stat-label">Major Topics</span></div>
+      <div class="stat-item"><span class="stat-num">18</span><span class="stat-label">Sub-Skills</span></div>
+      <div class="stat-item"><span class="stat-num">60+</span><span class="stat-label">Practice Questions</span></div>
+      <div class="stat-item"><span class="stat-num">300</span><span class="stat-label">ELO Scale</span></div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────
+       ABOUT WORKERA ELO
+  ───────────────────────────────────────── -->
+  <section class="section" id="about-workera">
+    <div class="section-header">
+      <span class="section-num">00</span>
+      <div class="section-title-block">
+        <h2>About Workera ELO</h2>
+        <span class="subtitle">How the platform works before you write a single answer</span>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <h3>📐 What is Workera ELO?</h3>
+      <p>Workera is an AI-powered skills assessment platform (founded by Andrew Ng's team via DeepLearning.AI) that measures your ML/AI skills using a <strong>Computerized Adaptive Test (CAT)</strong> powered by an <strong>Elo rating algorithm</strong>. Your score is not fixed — it dynamically updates after every question based on both your answer and the item's current difficulty rating.</p>
+      <p>Skills are measured on a <strong>1–300 scale</strong>: Beginner (1–100), Developing (101–200), Accomplished (201–300). The platform starts you with a mid-difficulty question and moves up or down based on correct/incorrect answers, converging on your true ability level in ~20 questions per domain.</p>
+    </div>
+
+    <div id="scoring" class="subsection">
+      <div class="subsection-title">ELO Scoring Mechanics</div>
+
+      <div class="concept-card">
+        <h4>How the Elo Update Works</h4>
+        <p>Each question has a difficulty rating D and your skill has a rating S. The expected probability of a correct answer is:</p>
+      </div>
+
+      <div class="formula">
+        E(correct) = 1 / (1 + 10^((D - S) / 400))
+
+After answer:
+  S_new = S + K × (actual − expected)
+  
+  actual = 1 (correct), 0 (incorrect)
+  K = sensitivity factor (typically 16–32)
+      </div>
+
+      <div class="concept-card">
+        <h4>Adaptive Difficulty Branching</h4>
+        <p>After each answer the algorithm selects the next question whose difficulty best discriminates at your current estimated skill level (roughly ±1 standard deviation). This means 20 questions carry more statistical power than a 60-question fixed test. Speed matters marginally: faster correct responses yield slightly larger positive updates; slower responses converge toward zero delta even if correct.</p>
+      </div>
+
+      <table class="data-table">
+        <tr>
+          <th>Score Band</th><th>Level</th><th>Typical Profile</th><th>Strategy</th>
+        </tr>
+        <tr><td><strong>1–100</strong></td><td>Beginner</td><td>Textbook definitions, no implementation experience</td><td>Focus on conceptual clarity</td></tr>
+        <tr><td><strong>101–150</strong></td><td>Developing–Low</td><td>Understands algorithms, struggles with edge cases</td><td>Practice implementation traps</td></tr>
+        <tr><td><strong>151–200</strong></td><td>Developing–High</td><td>Can implement & debug, weak on theory proofs</td><td>Strengthen math foundations</td></tr>
+        <tr><td><strong>201–250</strong></td><td>Accomplished–Low</td><td>Strong implementation + metric interpretation</td><td>Master hyperparameter reasoning</td></tr>
+        <tr><td><strong>251–300</strong></td><td>Accomplished–High</td><td>Research-level fluency, architectural decisions</td><td>Edge cases, failure modes, efficiency</td></tr>
+      </table>
+    </div>
+
+    <div id="strategy" class="subsection">
+      <div class="subsection-title">Test Strategy</div>
+
+      <div class="callout tip">
+        <span class="callout-icon">🎯</span>
+        <div class="callout-text"><strong>First question is the highest leverage question.</strong> An early correct answer on a medium-hard item rockets your Elo upward quickly. An early wrong answer on an easy item tanks it hard. Never guess early — if uncertain, apply elimination logic carefully.</div>
+      </div>
+      <div class="callout warn">
+        <span class="callout-icon">⚡</span>
+        <div class="callout-text"><strong>Speed has a small but non-zero effect.</strong> A correct answer in 30s beats a correct answer in 180s slightly. Do not rush (accuracy matters more), but don't deliberate indefinitely either. Practice timed execution.</div>
+      </div>
+      <div class="callout info">
+        <span class="callout-icon">🔁</span>
+        <div class="callout-text"><strong>Retakes overwrite scores</strong> (even if previous was better). Wait 7 days between retakes. Use the practice test first to calibrate starting difficulty. Sections can be taken independently.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 1: LINEAR REGRESSION
+  ───────────────────────────────────────── -->
+  <section class="section" id="linear-regression">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <div class="section-title-block">
+        <h2>Implementing Linear Regression</h2>
+        <span class="subtitle">Track A · Applying Foundational Techniques</span>
+      </div>
+    </div>
+
+    <!-- 1.1 GRADIENT DESCENT -->
+    <div class="subsection" id="lr-gradient-descent">
+      <div class="subsection-title">1.1 — Gradient Descent Implementation</div>
+
+      <div class="concept-card">
+        <h4>Core Math You Must Know Cold</h4>
+        <p>Model: ŷ = Xθ, where X ∈ ℝ^(m×(n+1)) with bias column prepended. Cost: J(θ) = (1/2m)‖Xθ − y‖². Gradient: ∇J = (1/m)Xᵀ(Xθ − y). Update rule: θ ← θ − α·∇J. Vectorized update handles all parameters simultaneously. Batch GD uses full dataset per step; SGD uses one sample; mini-batch uses a chunk (typical 32–512).</p>
+      </div>
+
+      <!-- Q1: MCQ -->
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            You run gradient descent on a linear regression problem and observe that the cost oscillates wildly and diverges after several iterations. The learning rate α = 1.5. What is the <strong>most likely cause</strong> and what is the appropriate fix?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>The features are not normalized — apply z-score standardization.</div>
+            <div class="opt correct"><span class="opt-key">B</span>The learning rate is too large — the gradient update overshoots the minimum; reduce α.</div>
+            <div class="opt"><span class="opt-key">C</span>The model is underfitting — add polynomial features to increase capacity.</div>
+            <div class="opt"><span class="opt-key">D</span>The cost function is non-convex — switch to a different optimizer.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Explanation & Key Insight</summary>
+            <div class="answer-body">
+              <strong>Answer: B.</strong> Linear regression has a convex quadratic cost surface. Diverging oscillations are the classic symptom of α exceeding the critical threshold α &lt; 2/λ_max where λ_max is the largest eigenvalue of (1/m)XᵀX. At α=1.5 the parameter vector alternates between sides of the bowl and grows. Fix: reduce α (try 0.01, 0.1) and monitor the cost curve — it should decrease monotonically. Feature normalization (A) helps GD converge faster but does not cause divergence on its own.
+              <div class="key-insight">
+                💡 On Workera, divergence questions often follow up by asking you to identify the learning curve shape. Divergence = J increases. Slow convergence = J decreases but very slowly. Oscillation without divergence = α slightly too large but below threshold.
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Q2: CODE -->
+      <div class="question-block">
+        <div class="q-tag code">Coding</div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Implement vectorized batch gradient descent for linear regression in Python/NumPy. Your function should return the learned parameter vector <strong>theta</strong> and the cost history array. <em>Do not use sklearn.</em>
+          </div>
+          <details class="answer-reveal">
+            <summary>Reference Implementation</summary>
+            <div class="answer-body">
+              <div class="code-block">
+                <div class="code-header"><span class="code-lang">Python · NumPy</span></div>
+                <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">gradient_descent_linreg</span>(
+    X: np.ndarray,          <span class="cm"># (m, n) feature matrix — NO bias column yet</span>
+    y: np.ndarray,          <span class="cm"># (m,) target vector</span>
+    alpha: <span class="tp">float</span> = <span class="nm">0.01</span>,
+    num_iters: <span class="tp">int</span> = <span class="nm">1000</span>
+) -> <span class="tp">tuple</span>[np.ndarray, np.ndarray]:
+
+    m = X.shape[<span class="nm">0</span>]
+
+    <span class="cm"># Prepend bias column of ones</span>
+    X_b = np.column_stack([np.ones(m), X])   <span class="cm"># (m, n+1)</span>
+    n1  = X_b.shape[<span class="nm">1</span>]
+    theta = np.zeros(n1)                     <span class="cm"># parameter init</span>
+    cost_history = np.zeros(num_iters)
+
+    <span class="kw">for</span> i <span class="kw">in</span> range(num_iters):
+        residual = X_b @ theta - y           <span class="cm"># (m,)   ŷ − y</span>
+        cost_history[i] = (<span class="nm">1</span> / (<span class="nm">2</span> * m)) * residual @ residual
+        gradient = (<span class="nm">1</span> / m) * X_b.T @ residual  <span class="cm"># (n+1,)</span>
+        theta -= alpha * gradient            <span class="cm"># simultaneous update</span>
+
+    <span class="kw">return</span> theta, cost_history
+
+
+<span class="cm"># ── Quick sanity check ──────────────────────────────</span>
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    rng  = np.random.default_rng(<span class="nm">42</span>)
+    X    = rng.normal(size=(<span class="nm">200</span>, <span class="nm">2</span>))
+    true = np.array([<span class="nm">3.0</span>, <span class="nm">-1.5</span>, <span class="nm">2.0</span>])   <span class="cm"># bias, w1, w2</span>
+    y    = np.column_stack([np.ones(<span class="nm">200</span>), X]) @ true + rng.normal(scale=<span class="nm">0.3</span>, size=<span class="nm">200</span>)
+
+    theta, history = gradient_descent_linreg(X, y, alpha=<span class="nm">0.05</span>, num_iters=<span class="nm">2000</span>)
+    print(<span class="st">f"Learned θ: {theta}"</span>)            <span class="cm"># Should be ≈ [3, -1.5, 2]</span>
+    print(<span class="st">f"Final cost: {history[-1]:.4f}"</span>)</pre>
+              </div>
+              <strong>Critical details Workera tests:</strong>
+              <ul>
+                <li>Prepend bias column <em>before</em> the loop (not inside) — efficiency matters.</li>
+                <li>Vectorized gradient = (1/m) Xᵀ(Xθ−y), not a Python for-loop over samples.</li>
+                <li>Update is <em>simultaneous</em>: compute full gradient first, then update θ.</li>
+                <li>Cost formula uses 1/(2m) so that the gradient has a clean 1/m coefficient.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Q3: Short Answer -->
+      <div class="question-block">
+        <div class="q-tag short">Short Answer <span class="difficulty easy">Easy</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            What is the difference between Batch Gradient Descent, Stochastic Gradient Descent, and Mini-Batch Gradient Descent? When would you prefer each?
+          </div>
+          <div class="subj-answer" style="padding: 18px 22px; border-top: 1px solid var(--border);">
+            <table class="data-table">
+              <tr><th>Variant</th><th>Update Per Step</th><th>Noise</th><th>When to Use</th></tr>
+              <tr><td><strong>Batch GD</strong></td><td>Full dataset</td><td>Zero</td><td>Small datasets, guaranteed convergence, convex problems</td></tr>
+              <tr><td><strong>SGD</strong></td><td>1 sample</td><td>High</td><td>Very large datasets, online learning, can escape local minima</td></tr>
+              <tr><td><strong>Mini-Batch GD</strong></td><td>B samples (32–512)</td><td>Low–Moderate</td><td>Deep learning standard; vectorization benefits + noise helps generalization</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1.2 PERFORMANCE METRICS -->
+    <div class="subsection" id="lr-metrics">
+      <div class="subsection-title">1.2 — Regression Performance Metrics</div>
+
+      <div class="concept-card">
+        <h4>Metric Reference Sheet</h4>
+        <p>Know the formula, range, unit, and when each metric is preferred. These appear as both MCQ and classification questions on Workera.</p>
+      </div>
+
+      <table class="data-table">
+        <tr><th>Metric</th><th>Formula</th><th>Scale</th><th>Key Property</th></tr>
+        <tr><td><strong>MAE</strong></td><td>(1/m)Σ|yᵢ−ŷᵢ|</td><td>Same as y</td><td>Robust to outliers</td></tr>
+        <tr><td><strong>MSE</strong></td><td>(1/m)Σ(yᵢ−ŷᵢ)²</td><td>y²</td><td>Penalizes large errors heavily</td></tr>
+        <tr><td><strong>RMSE</strong></td><td>√MSE</td><td>Same as y</td><td>Differentiable, interpretable</td></tr>
+        <tr><td><strong>R²</strong></td><td>1 − SSres/SStot</td><td>[−∞, 1]</td><td>Fraction of variance explained</td></tr>
+        <tr><td><strong>Adj. R²</strong></td><td>1 − (1−R²)(m−1)/(m−p−1)</td><td>[−∞, 1]</td><td>Penalizes extra features</td></tr>
+      </table>
+
+      <!-- MCQ metrics -->
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            You're predicting house prices. Your dataset has a few extreme outlier sales (10× median price). Which metric is <strong>most robust to these outliers</strong> when evaluating model quality?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>MSE — mean squared error punishes all errors proportionally.</div>
+            <div class="opt correct"><span class="opt-key">B</span>MAE — mean absolute error gives equal weight to all deviations regardless of magnitude.</div>
+            <div class="opt"><span class="opt-key">C</span>R² — coefficient of determination is always between 0 and 1.</div>
+            <div class="opt"><span class="opt-key">D</span>RMSE — root mean squared error corrects the scale issue of MSE.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Explanation</summary>
+            <div class="answer-body">
+              <strong>Answer: B.</strong> MAE grows linearly with error size so a 10× outlier contributes exactly 10× the loss of a typical error. MSE grows quadratically — that same outlier contributes 100× the loss, dominating the metric and misleading you about typical-case performance. RMSE is the square root of MSE so still outlier-sensitive. R² can even go negative when the model is terrible, and is distorted by outliers via SStot.
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Q: subjective on R² -->
+      <div class="question-block">
+        <div class="q-tag subjective">Subjective <span class="difficulty hard">Hard</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            A model achieves R² = 0.95 on training data and R² = 0.40 on test data. Another model achieves R² = 0.75 on training and R² = 0.72 on test. Compare these models. Which would you deploy and why?
+          </div>
+          <details class="answer-reveal">
+            <summary>Model Answer</summary>
+            <div class="answer-body">
+              <strong>Model A</strong> (0.95 train / 0.40 test) is heavily <em>overfitted</em>: it memorizes training patterns but generalizes poorly. The 0.55 train-test gap indicates high variance. <strong>Model B</strong> (0.75 / 0.72) shows a small, acceptable generalization gap (0.03), demonstrating stability and genuine pattern learning.
+              <br><br>
+              Deploy <strong>Model B</strong>. In production, test R² predicts real-world performance. Model A's high training R² is misleading — it would fail on new data. Remedies for Model A would include regularization (Ridge/Lasso), dropout (if neural), or reduced model complexity.
+              <div class="key-insight">💡 Workera often pairs this with a follow-up asking what regularization technique to apply. Know that Ridge (L2) shrinks coefficients toward zero; Lasso (L1) produces sparsity; ElasticNet combines both.</div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1.3 DATA PREPROCESSING -->
+    <div class="subsection" id="lr-preprocessing">
+      <div class="subsection-title">1.3 — Data Preprocessing for Regression</div>
+
+      <!-- MCQ -->
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Feature matrix X has columns with very different scales: age ∈ [18,80] and salary ∈ [30000,500000]. You apply <strong>z-score standardization</strong>. Which of the following best describes its effect on gradient descent for linear regression?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>It changes the optimal θ* values, leading to a different final model.</div>
+            <div class="opt"><span class="opt-key">B</span>It has no effect; gradient descent is scale-invariant by definition.</div>
+            <div class="opt correct"><span class="opt-key">C</span>It makes the cost surface more spherical, allowing a uniform learning rate to converge faster without changing the predictions.</div>
+            <div class="opt"><span class="opt-key">D</span>It prevents overfitting by shrinking the parameter values toward zero.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Explanation</summary>
+            <div class="answer-body">
+              <strong>Answer: C.</strong> Without normalization the cost bowl is elongated along the low-scale axis (age) because tiny steps in salary direction cause huge cost changes. Gradient descent zig-zags slowly. After standardization (μ=0, σ=1 per feature), the bowl is approximately spherical, one α works for all parameters, and convergence is dramatically faster. The final predictions are mathematically equivalent once you back-transform θ. This is distinct from regularization (D).
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- CODE: handle missing + scale -->
+      <div class="question-block">
+        <div class="q-tag code">Coding <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Write a preprocessing pipeline (without sklearn) that: (1) imputes numeric NaNs with column medians, (2) standardizes all features, (3) returns both the transformed X and a transform function that can be applied to test data using <em>only training statistics</em>.
+          </div>
+          <details class="answer-reveal">
+            <summary>Reference Implementation</summary>
+            <div class="answer-body">
+              <div class="code-block">
+                <div class="code-header"><span class="code-lang">Python · NumPy</span></div>
+                <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">fit_transform</span>(X_train: np.ndarray):
+    <span class="cm">"""
+    Returns (X_scaled, transform_fn) where transform_fn applies
+    train-fitted statistics to new data — preventing data leakage.
+    """</span>
+    <span class="cm"># Step 1: Compute column medians ignoring NaN</span>
+    medians = np.nanmedian(X_train, axis=<span class="nm">0</span>)  <span class="cm"># shape (n,)</span>
+
+    <span class="cm"># Step 2: Fill NaN with median (copy to avoid mutation)</span>
+    X_imp = X_train.copy().astype(<span class="tp">float</span>)
+    <span class="kw">for</span> j <span class="kw">in</span> range(X_imp.shape[<span class="nm">1</span>]):
+        mask = np.isnan(X_imp[:, j])
+        X_imp[mask, j] = medians[j]
+
+    <span class="cm"># Step 3: Fit scaler on imputed train data</span>
+    mu    = X_imp.mean(axis=<span class="nm">0</span>)    <span class="cm"># shape (n,)</span>
+    sigma = X_imp.std(axis=<span class="nm">0</span>)     <span class="cm"># shape (n,)</span>
+    sigma[sigma == <span class="nm">0</span>] = <span class="nm">1.0</span>      <span class="cm"># avoid division by zero for const cols</span>
+
+    X_scaled = (X_imp - mu) / sigma
+
+    <span class="kw">def</span> <span class="fn">transform</span>(X_new: np.ndarray) -> np.ndarray:
+        X_c = X_new.copy().astype(<span class="tp">float</span>)
+        <span class="kw">for</span> j <span class="kw">in</span> range(X_c.shape[<span class="nm">1</span>]):
+            mask = np.isnan(X_c[:, j])
+            X_c[mask, j] = medians[j]  <span class="cm"># use TRAIN median</span>
+        <span class="kw">return</span> (X_c - mu) / sigma      <span class="cm"># use TRAIN mu / sigma</span>
+
+    <span class="kw">return</span> X_scaled, transform
+
+
+<span class="cm"># ── Usage ────────────────────────────────────────────</span>
+X_tr = np.array([[<span class="nm">1.0</span>, np.nan], [<span class="nm">3.0</span>, <span class="nm">2.0</span>], [np.nan, <span class="nm">4.0</span>], [<span class="nm">5.0</span>, <span class="nm">6.0</span>]])
+X_te = np.array([[<span class="nm">2.0</span>, np.nan], [<span class="nm">4.0</span>, <span class="nm">1.0</span>]])
+
+X_tr_s, tfn = fit_transform(X_tr)
+X_te_s      = tfn(X_te)   <span class="cm"># no leakage — uses train stats only</span></pre>
+              </div>
+              <div class="key-insight">💡 Data leakage is a frequent Workera trap question. NEVER compute mean/std on the full dataset before splitting. Always fit the scaler on train only, then apply to val/test.</div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 2: LOGISTIC REGRESSION
+  ───────────────────────────────────────── -->
+  <section class="section" id="logistic-regression">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <div class="section-title-block">
+        <h2>Implementing Logistic Regression</h2>
+        <span class="subtitle">Track A · Binary Classification</span>
+      </div>
+    </div>
+
+    <!-- 2.1 Classification Metrics -->
+    <div class="subsection" id="logreg-metrics">
+      <div class="subsection-title">2.1 — Classification Performance Metrics</div>
+
+      <div class="concept-card">
+        <h4>Confusion Matrix & Derived Metrics</h4>
+        <p>TP = true positives, TN = true negatives, FP = false positives (Type I), FN = false negatives (Type II). All classification metrics derive from this 2×2 table.</p>
+      </div>
+
+      <div class="formula">
+Accuracy   = (TP + TN) / (TP + TN + FP + FN)
+Precision  = TP / (TP + FP)          ← "of predicted positives, how many are real?"
+Recall     = TP / (TP + FN)          ← "of real positives, how many did we catch?"
+F1         = 2 × (P × R) / (P + R)   ← harmonic mean; balanced P–R tradeoff
+Specificity = TN / (TN + FP)
+AUC-ROC    = area under TPR vs FPR curve ∈ [0.5, 1.0]
+      </div>
+
+      <!-- MCQ: precision vs recall tradeoff -->
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty hard">Hard</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            You're building a cancer detection classifier. Missing a real positive (cancer patient classified as healthy) is <strong>far more dangerous</strong> than a false alarm (healthy patient flagged for more tests). Which metric should you <strong>maximize</strong>?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>Precision — minimizes the number of false alarms sent to patients.</div>
+            <div class="opt correct"><span class="opt-key">B</span>Recall (Sensitivity) — minimizes the number of missed cancer cases.</div>
+            <div class="opt"><span class="opt-key">C</span>Accuracy — gives the overall fraction of correct classifications.</div>
+            <div class="opt"><span class="opt-key">D</span>Specificity — measures how well we identify healthy patients correctly.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Explanation</summary>
+            <div class="answer-body">
+              <strong>Answer: B.</strong> Recall = TP/(TP+FN) penalizes FN (missed cancers). Maximizing recall means we lower the classification threshold, accepting more FP (unnecessary follow-ups) but reducing FN (missed cases). Precision (A) would have the opposite effect. In healthcare and fraud detection, the cost asymmetry between FN and FP is explicit — always ask: "which error costs more?" before picking a metric.
+              <div class="key-insight">💡 Workera asks this via scenario framing. Map: FN-costly → maximize Recall; FP-costly → maximize Precision; balanced → F1; threshold-agnostic → AUC-ROC.</div>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- MCQ: imbalanced classes -->
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            A dataset has 950 negative and 50 positive samples. A naive classifier that <strong>always predicts negative</strong> achieves accuracy = 95%. What metric would best expose this model's failure?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>MSE of the predicted probabilities.</div>
+            <div class="opt correct"><span class="opt-key">B</span>F1-score or AUC-ROC — both penalize the zero-recall on the minority class.</div>
+            <div class="opt"><span class="opt-key">C</span>Log-loss (binary cross-entropy).</div>
+            <div class="opt"><span class="opt-key">D</span>Accuracy on the negative class only.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Explanation</summary>
+            <div class="answer-body">
+              <strong>Answer: B.</strong> The naive classifier has Recall = 0 (no positives predicted) and Precision = undefined (0/0). F1 = 0. AUC-ROC = 0.5 (random). Both immediately reveal the failure. Accuracy (95%) is misleading for imbalanced data — this is a well-known pitfall. Log-loss (C) would give a finite but misleading value because predicted probability for negatives is 1.0.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.2 Decision Boundary -->
+    <div class="subsection" id="logreg-boundary">
+      <div class="subsection-title">2.2 — Decision Boundary & Output Interpretation</div>
+
+      <div class="concept-card">
+        <h4>Sigmoid & Decision Boundary</h4>
+        <p>Logistic regression outputs P(y=1|x) = σ(θᵀx) = 1/(1+e^(−θᵀx)). Decision boundary is the set {x : θᵀx = 0} — a hyperplane in feature space. The boundary is linear in feature space but becomes curved when polynomial features are added.</p>
+      </div>
+
+      <!-- MCQ -->
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            A logistic regression model outputs P(y=1|x) = 0.3. Using a threshold of 0.5, the prediction is class 0. You lower the threshold to 0.25. How does this change the model's behavior across the dataset?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>More samples are classified as class 0; recall for class 1 decreases.</div>
+            <div class="opt correct"><span class="opt-key">B</span>More samples are classified as class 1; recall for class 1 increases but precision for class 1 likely decreases.</div>
+            <div class="opt"><span class="opt-key">C</span>The model probabilities change but the classification boundary stays the same.</div>
+            <div class="opt"><span class="opt-key">D</span>The model is retrained with a new decision boundary during optimization.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Explanation</summary>
+            <div class="answer-body">
+              <strong>Answer: B.</strong> Lowering the threshold moves the decision boundary so fewer raw probability is needed to call class 1. More points cross into the positive region → more TP and more FP → recall increases, precision decreases (P–R tradeoff). The model probabilities are fixed (no retraining) — only the post-hoc threshold changes. This is the foundation for ROC curve construction.
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Subjective -->
+      <div class="question-block">
+        <div class="q-tag subjective">Subjective <span class="difficulty hard">Hard</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Explain why logistic regression <em>output probabilities</em> are not necessarily calibrated, and describe one technique to calibrate them.
+          </div>
+          <details class="answer-reveal">
+            <summary>Model Answer</summary>
+            <div class="answer-body">
+              Logistic regression is trained to maximize log-likelihood, not to minimize calibration error. On an imbalanced dataset or when decision boundaries are near dense data regions, the sigmoid outputs can be systematically over- or under-confident (e.g., outputting 0.9 for a sample that historically is positive only 60% of the time).<br><br>
+              <strong>Calibration techniques:</strong>
+              <ul>
+                <li><strong>Platt Scaling:</strong> fit a second logistic regression on the model's raw scores using a hold-out set. Cheap and effective for sigmoid-shaped reliability diagrams.</li>
+                <li><strong>Isotonic Regression:</strong> non-parametric, monotone transformation fitted on the calibration set — more flexible than Platt, but requires more data.</li>
+              </ul>
+              Evaluate calibration with a <em>reliability diagram</em> (plot mean predicted probability vs actual fraction in each bin) and the <em>Expected Calibration Error (ECE)</em>.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.3 Implementation -->
+    <div class="subsection" id="logreg-impl">
+      <div class="subsection-title">2.3 — Binary Classification Implementation</div>
+
+      <div class="question-block">
+        <div class="q-tag code">Coding <span class="difficulty hard">Hard</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Implement logistic regression from scratch: sigmoid, binary cross-entropy loss, gradient computation, and a predict method. Then train it on a toy XOR-like dataset and explain why the linear model fails.
+          </div>
+          <details class="answer-reveal">
+            <summary>Reference Implementation</summary>
+            <div class="answer-body">
+              <div class="code-block">
+                <div class="code-header"><span class="code-lang">Python · NumPy</span></div>
+                <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">class</span> <span class="tp">LogisticRegression</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, alpha=<span class="nm">0.1</span>, n_iter=<span class="nm">1000</span>, lam=<span class="nm">0.0</span>):
+        self.alpha, self.n_iter, self.lam = alpha, n_iter, lam
+
+    <span class="kw">@staticmethod</span>
+    <span class="kw">def</span> <span class="fn">_sigmoid</span>(z): <span class="kw">return</span> <span class="nm">1</span> / (<span class="nm">1</span> + np.exp(-np.clip(z, -<span class="nm">500</span>, <span class="nm">500</span>)))
+
+    <span class="kw">def</span> <span class="fn">fit</span>(self, X, y):
+        m, n = X.shape
+        X_b  = np.column_stack([np.ones(m), X])
+        self.theta = np.zeros(n + <span class="nm">1</span>)
+
+        <span class="kw">for</span> _ <span class="kw">in</span> range(self.n_iter):
+            p       = self._sigmoid(X_b @ self.theta)  <span class="cm"># (m,)</span>
+            <span class="cm"># Binary cross-entropy gradient</span>
+            grad    = (<span class="nm">1</span>/m) * X_b.T @ (p - y)
+            <span class="cm"># L2 regularization (skip bias term)</span>
+            reg     = np.concatenate([[<span class="nm">0</span>], self.lam * self.theta[<span class="nm">1</span>:]])
+            self.theta -= self.alpha * (grad + reg)
+        <span class="kw">return</span> self
+
+    <span class="kw">def</span> <span class="fn">predict_proba</span>(self, X):
+        X_b = np.column_stack([np.ones(len(X)), X])
+        <span class="kw">return</span> self._sigmoid(X_b @ self.theta)
+
+    <span class="kw">def</span> <span class="fn">predict</span>(self, X, threshold=<span class="nm">0.5</span>):
+        <span class="kw">return</span> (self.predict_proba(X) >= threshold).astype(<span class="tp">int</span>)
+
+
+<span class="cm"># XOR dataset — logistic regression cannot separate this</span>
+X_xor = np.array([[<span class="nm">0</span>,<span class="nm">0</span>],[<span class="nm">0</span>,<span class="nm">1</span>],[<span class="nm">1</span>,<span class="nm">0</span>],[<span class="nm">1</span>,<span class="nm">1</span>]])
+y_xor = np.array([<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">0</span>])
+
+model = LogisticRegression(alpha=<span class="nm">0.5</span>, n_iter=<span class="nm">5000</span>).fit(X_xor, y_xor)
+print(model.predict(X_xor))  <span class="cm"># Will NOT achieve [0,1,1,0] — XOR is not linearly separable</span>
+
+<span class="cm"># Fix: add polynomial feature x1*x2</span>
+X_poly = np.column_stack([X_xor, X_xor[:,<span class="nm">0</span>] * X_xor[:,<span class="nm">1</span>]])
+model2 = LogisticRegression(alpha=<span class="nm">0.5</span>, n_iter=<span class="nm">10000</span>).fit(X_poly, y_xor)
+print(model2.predict(X_poly))  <span class="cm"># Now converges to [0,1,1,0]</span></pre>
+              </div>
+              <strong>Why XOR fails without feature engineering:</strong> XOR requires a non-linear decision boundary. Logistic regression can only learn a hyperplane in feature space. Adding the interaction term x₁×x₂ makes the problem linearly separable in the augmented space.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 3: NEURAL NETWORKS
+  ───────────────────────────────────────── -->
+  <section class="section" id="neural-networks">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <div class="section-title-block">
+        <h2>Designing Neural Networks</h2>
+        <span class="subtitle">Track B · Developing Intermediate Models</span>
+      </div>
+    </div>
+
+    <!-- 3.1 DESIGN -->
+    <div class="subsection" id="nn-design">
+      <div class="subsection-title">3.1 — Network Architecture Design</div>
+
+      <table class="data-table">
+        <tr><th>Task Type</th><th>Output Layer</th><th>Activation</th><th>Loss</th></tr>
+        <tr><td>Binary classification</td><td>1 neuron</td><td>Sigmoid</td><td>Binary cross-entropy</td></tr>
+        <tr><td>Multi-class (C classes)</td><td>C neurons</td><td>Softmax</td><td>Categorical cross-entropy</td></tr>
+        <tr><td>Regression</td><td>1 neuron</td><td>Linear (none)</td><td>MSE / MAE / Huber</td></tr>
+        <tr><td>Multi-label</td><td>C neurons</td><td>Sigmoid (each)</td><td>Binary cross-entropy (per label)</td></tr>
+      </table>
+
+      <!-- MCQ architecture -->
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            You're designing a neural network for 10-class image classification. The final hidden layer has 128 units. Which output configuration is correct?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>1 output neuron with sigmoid activation; threshold at 0.5 per class.</div>
+            <div class="opt"><span class="opt-key">B</span>10 output neurons with ReLU activation; argmax gives the class.</div>
+            <div class="opt correct"><span class="opt-key">C</span>10 output neurons with Softmax activation; outputs sum to 1 and represent class probabilities.</div>
+            <div class="opt"><span class="opt-key">D</span>10 output neurons with Sigmoid activation paired with binary cross-entropy.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Explanation</summary>
+            <div class="answer-body">
+              <strong>Answer: C.</strong> Softmax enforces mutual exclusivity (outputs sum to 1), appropriate when exactly one class is correct. ReLU (B) can output negatives and doesn't normalize — invalid for probabilities. Sigmoid per neuron (D) is for multi-label where multiple classes can be simultaneously true. The correct loss is categorical cross-entropy (sparse or one-hot form).
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- MCQ: vanishing gradient -->
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty hard">Hard</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            A deep network (20 hidden layers) with <strong>sigmoid activations</strong> throughout fails to learn — training loss barely decreases from initialization. What is the most likely cause?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>The learning rate is too high, causing gradient explosion.</div>
+            <div class="opt"><span class="opt-key">B</span>The network is too wide — reduce the number of neurons per layer.</div>
+            <div class="opt correct"><span class="opt-key">C</span>Vanishing gradients: sigmoid's derivative ≤ 0.25 compresses gradients to near-zero after repeated multiplication through layers.</div>
+            <div class="opt"><span class="opt-key">D</span>Overfitting — add more training data or dropout.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Explanation</summary>
+            <div class="answer-body">
+              <strong>Answer: C.</strong> σ'(z) = σ(z)(1−σ(z)) ≤ 0.25 always. Backprop multiplies gradients through L layers: 0.25^20 ≈ 10⁻¹² — essentially zero. Early layers receive no gradient signal. <strong>Fix:</strong> replace sigmoid with ReLU (or variants: Leaky ReLU, ELU, GELU) which have gradient = 1 for positive inputs. Also use He initialization, batch normalization, and residual connections for very deep nets.
+              <div class="key-insight">💡 Memorize: ReLU derivative = 1 (z>0), 0 (z≤0). Leaky ReLU = 1 (z>0), α≈0.01 (z≤0). ELU = 1 (z>0), αeᶻ (z≤0). GELU is used in Transformers.</div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3.2 TRAINING & TUNING -->
+    <div class="subsection" id="nn-training">
+      <div class="subsection-title">3.2 — Training & Hyperparameter Tuning</div>
+
+      <div class="concept-card">
+        <h4>Key Hyperparameters to Know</h4>
+        <p>Learning rate (most impactful), batch size, depth, width, activation functions, optimizer (SGD, Adam, RMSProp), regularization (L1/L2, dropout rate), number of epochs, weight initialization strategy.</p>
+      </div>
+
+      <!-- MCQ Adam -->
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            The Adam optimizer maintains two exponential moving averages of gradients. What do they represent and why does this help?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>Past gradients and past loss values — reduces overfitting.</div>
+            <div class="opt correct"><span class="opt-key">B</span>First moment (mean of gradients) and second moment (uncentered variance) — enables per-parameter adaptive learning rates with momentum.</div>
+            <div class="opt"><span class="opt-key">C</span>Gradient and Hessian — approximates second-order optimization.</div>
+            <div class="opt"><span class="opt-key">D</span>Current gradient and previous gradient — computes a velocity term only.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Explanation</summary>
+            <div class="answer-body">
+              <strong>Answer: B.</strong> Adam: m_t = β₁m_{t-1} + (1−β₁)g_t (first moment), v_t = β₂v_{t-1} + (1−β₂)g_t² (second moment). Bias-corrected: m̂_t = m_t/(1−β₁ᵗ), v̂_t = v_t/(1−β₂ᵗ). Update: θ ← θ − α m̂_t / (√v̂_t + ε). Parameters with consistently large gradients get smaller effective learning rates (v̂_t large); sparse parameters get larger effective rates. Defaults: β₁=0.9, β₂=0.999, ε=10⁻⁸.
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Subjective: early stopping -->
+      <div class="question-block">
+        <div class="q-tag subjective">Subjective <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Describe the role of <strong>early stopping</strong> and <strong>dropout</strong> as regularization techniques for neural networks. Are they complementary or redundant?
+          </div>
+          <details class="answer-reveal">
+            <summary>Model Answer</summary>
+            <div class="answer-body">
+              <strong>Early stopping</strong> monitors validation loss and halts training when it starts increasing (indicating overfitting). It's equivalent to L2 regularization in some regimes — it prevents the model from memorizing training noise by limiting effective model complexity through iteration count.
+              <br><br>
+              <strong>Dropout</strong> randomly zeros out neurons (probability p, typically 0.2–0.5) during each forward pass in training. This forces the network to learn redundant representations and prevents co-adaptation of neurons, analogous to training an ensemble of thinned networks.
+              <br><br>
+              They are <strong>complementary</strong>: dropout controls model capacity per step; early stopping controls when to stop. Both reduce overfitting through different mechanisms and are typically used together. Note: dropout is disabled at inference time (scale outputs by 1−p or use inverted dropout).
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3.3 FRAMEWORKS -->
+    <div class="subsection" id="nn-frameworks">
+      <div class="subsection-title">3.3 — Neural Networks with Standard Frameworks</div>
+
+      <div class="question-block">
+        <div class="q-tag code">Coding <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Build a 3-layer feedforward neural network in <strong>PyTorch</strong> for binary classification (input dim=20). Include a training loop with Adam optimizer and evaluate on a held-out set.
+          </div>
+          <details class="answer-reveal">
+            <summary>Reference Implementation</summary>
+            <div class="answer-body">
+              <div class="code-block">
+                <div class="code-header"><span class="code-lang">PyTorch</span></div>
+                <pre><span class="kw">import</span> torch, torch.nn <span class="kw">as</span> nn
+<span class="kw">from</span> torch.utils.data <span class="kw">import</span> DataLoader, TensorDataset
+
+<span class="kw">class</span> <span class="tp">BinaryMLP</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, input_dim=<span class="nm">20</span>):
+        <span class="kw">super</span>().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(input_dim, <span class="nm">64</span>),
+            nn.ReLU(),
+            nn.Dropout(<span class="nm">0.3</span>),
+            nn.Linear(<span class="nm">64</span>, <span class="nm">32</span>),
+            nn.ReLU(),
+            nn.Dropout(<span class="nm">0.3</span>),
+            nn.Linear(<span class="nm">32</span>, <span class="nm">1</span>),
+            nn.Sigmoid()
+        )
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x): <span class="kw">return</span> self.net(x).squeeze(<span class="nm">-1</span>)
+
+
+<span class="kw">def</span> <span class="fn">train</span>(X_tr, y_tr, X_val, y_val, epochs=<span class="nm">50</span>, batch=<span class="nm">64</span>):
+    model     = BinaryMLP()
+    optimizer = torch.optim.Adam(model.parameters(), lr=<span class="nm">1e-3</span>)
+    criterion = nn.BCELoss()
+
+    loader = DataLoader(TensorDataset(X_tr, y_tr), batch_size=batch, shuffle=<span class="tp">True</span>)
+
+    <span class="kw">for</span> ep <span class="kw">in</span> range(epochs):
+        model.train()
+        <span class="kw">for</span> xb, yb <span class="kw">in</span> loader:
+            optimizer.zero_grad()
+            loss = criterion(model(xb), yb)
+            loss.backward()
+            optimizer.step()
+
+        <span class="cm"># Validation</span>
+        model.eval()
+        <span class="kw">with</span> torch.no_grad():
+            val_preds = (model(X_val) >= <span class="nm">0.5</span>).float()
+            acc = (val_preds == y_val).float().mean().item()
+        <span class="kw">if</span> (ep+<span class="nm">1</span>) % <span class="nm">10</span> == <span class="nm">0</span>:
+            print(<span class="st">f"Epoch {ep+1:3d} | val_acc={acc:.3f}"</span>)
+    <span class="kw">return</span> model
+
+
+<span class="cm"># Toy data</span>
+X = torch.randn(<span class="nm">1000</span>, <span class="nm">20</span>); y = (X[:, <span class="nm">0</span>] > <span class="nm">0</span>).float()
+split = <span class="nm">800</span>
+trained = train(X[:split], y[:split], X[split:], y[split:])</pre>
+              </div>
+              <strong>Workera tests:</strong> BCELoss vs BCEWithLogitsLoss (latter is numerically more stable — combine logits + loss), zero_grad placement, model.eval() + no_grad() during validation.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 4: DECISION TREES & ENSEMBLES
+  ───────────────────────────────────────── -->
+  <section class="section" id="decision-trees">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <div class="section-title-block">
+        <h2>Decision Trees & Ensemble Methods</h2>
+        <span class="subtitle">Track B · Developing Intermediate Models</span>
+      </div>
+    </div>
+
+    <!-- 4.1 DECISION TREES -->
+    <div class="subsection" id="dt-build">
+      <div class="subsection-title">4.1 — Building & Interpreting Decision Trees</div>
+
+      <div class="concept-card">
+        <h4>Splitting Criteria</h4>
+        <p><strong>Gini Impurity:</strong> G = 1 − Σ pᵢ². Measures probability that a randomly chosen sample is misclassified if labelled according to class distribution. <strong>Entropy:</strong> H = −Σ pᵢ log₂(pᵢ). Information-theoretic measure of impurity. <strong>Information Gain:</strong> IG = H(parent) − Σ(|child|/|parent|)H(child). Both give similar splits empirically; Gini is computationally cheaper.</p>
+      </div>
+
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            A leaf node in a decision tree has class distribution: 8 samples of class A, 2 samples of class B. What is the <strong>Gini impurity</strong> of this node?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>0.5</div>
+            <div class="opt correct"><span class="opt-key">B</span>0.32</div>
+            <div class="opt"><span class="opt-key">C</span>0.20</div>
+            <div class="opt"><span class="opt-key">D</span>0.72</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Calculation</summary>
+            <div class="answer-body">
+              <strong>Answer: B.</strong> p_A = 8/10 = 0.8, p_B = 2/10 = 0.2. G = 1 − (0.8² + 0.2²) = 1 − (0.64 + 0.04) = 1 − 0.68 = <strong>0.32</strong>. A pure node (all one class) has G=0; maximum impurity for 2 classes is G=0.5 (50/50 split). G=0.32 indicates a fairly pure node.
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Subjective: pruning -->
+      <div class="question-block">
+        <div class="q-tag subjective">Subjective <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            What is the difference between <strong>pre-pruning</strong> and <strong>post-pruning</strong> in decision trees? Describe one hyperparameter for each.
+          </div>
+          <details class="answer-reveal">
+            <summary>Model Answer</summary>
+            <div class="answer-body">
+              <strong>Pre-pruning (early stopping)</strong> restricts tree growth during construction by halting splits when conditions are met. Key hyperparameters: <em>max_depth</em> (limits tree height), <em>min_samples_split</em> (minimum samples required to split a node), <em>min_impurity_decrease</em> (split only if impurity drops by at least this amount).
+              <br><br>
+              <strong>Post-pruning</strong> grows a full tree first, then removes branches that provide insufficient generalization benefit on a validation set. Key technique: <em>cost-complexity pruning</em> (ccp_alpha in sklearn) adds a penalty α × (number of leaves) to the cost — higher α prunes more aggressively.
+              <br><br>
+              Post-pruning generally produces better trees because it has the full context of the tree before deciding what to remove, but it is more computationally expensive.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4.2 ENSEMBLE -->
+    <div class="subsection" id="ensemble-methods">
+      <div class="subsection-title">4.2 — Ensemble Techniques</div>
+
+      <table class="data-table">
+        <tr><th>Method</th><th>Idea</th><th>Base Learners</th><th>Key Hyperparameters</th></tr>
+        <tr><td><strong>Bagging</strong></td><td>Bootstrap samples → independent trees → majority vote</td><td>High-variance (deep trees)</td><td>n_estimators, max_samples</td></tr>
+        <tr><td><strong>Random Forest</strong></td><td>Bagging + random feature subset per split</td><td>Deep trees</td><td>n_estimators, max_features (√n for clf)</td></tr>
+        <tr><td><strong>AdaBoost</strong></td><td>Sequential, reweights misclassified samples</td><td>Shallow stumps</td><td>n_estimators, learning_rate</td></tr>
+        <tr><td><strong>Gradient Boosting</strong></td><td>Sequential, fits residuals (pseudo-gradients)</td><td>Shallow trees</td><td>n_estimators, learning_rate, max_depth</td></tr>
+        <tr><td><strong>XGBoost</strong></td><td>Regularized GBM + second-order gradients</td><td>Shallow trees</td><td>subsample, colsample_bytree, lambda</td></tr>
+      </table>
+
+      <!-- MCQ: bagging vs boosting -->
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty hard">Hard</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Bagging reduces <strong>variance</strong> but not bias. Boosting reduces <strong>bias</strong> but can increase variance. Given a model that underfits (high bias, low variance), which ensemble technique is more appropriate?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>Bagging with many deep trees — reduces variance of the underfitting base learners.</div>
+            <div class="opt correct"><span class="opt-key">B</span>Boosting with weak learners — sequentially corrects errors and reduces bias.</div>
+            <div class="opt"><span class="opt-key">C</span>Neither — ensembles cannot fix high bias; add more features instead.</div>
+            <div class="opt"><span class="opt-key">D</span>Bagging with shallow stumps — depth controls variance independently of bias.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Explanation</summary>
+            <div class="answer-body">
+              <strong>Answer: B.</strong> Bagging averages parallel models to cancel out independent errors (variance reduction). If each base learner already has high bias, averaging them doesn't fix it — you average high-bias models and still get high bias. Boosting trains sequentially, each model specializing in the errors of its predecessors, directly reducing the combined model's bias at the cost of some added variance. The classic framing: Bagging for overfitting; Boosting for underfitting.
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- CODE: feature importance -->
+      <div class="question-block">
+        <div class="q-tag code">Coding <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Train a Random Forest classifier with sklearn and extract + plot feature importances. Explain what "mean decrease in impurity" (MDI) means and name one limitation.
+          </div>
+          <details class="answer-reveal">
+            <summary>Reference Implementation & Explanation</summary>
+            <div class="answer-body">
+              <div class="code-block">
+                <div class="code-header"><span class="code-lang">Python · sklearn</span></div>
+                <pre><span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+X, y = make_classification(n_samples=<span class="nm">500</span>, n_features=<span class="nm">10</span>, n_informative=<span class="nm">5</span>,
+                            random_state=<span class="nm">42</span>)
+
+rf = RandomForestClassifier(n_estimators=<span class="nm">100</span>, max_features=<span class="st">"sqrt"</span>,
+                             random_state=<span class="nm">42</span>).fit(X, y)
+
+importances = rf.feature_importances_   <span class="cm"># MDI: array of shape (n_features,)</span>
+order = np.argsort(importances)[::-<span class="nm">1</span>]  <span class="cm"># descending</span>
+
+<span class="kw">for</span> rank, idx <span class="kw">in</span> enumerate(order):
+    print(<span class="st">f"Rank {rank+1}: feature_{idx} | importance = {importances[idx]:.4f}"</span>)</pre>
+              </div>
+              <strong>MDI (Mean Decrease in Impurity):</strong> for each feature, sum the weighted Gini/entropy reduction across all splits on that feature across all trees, normalized to sum to 1. Higher MDI = more useful feature for splitting.
+              <br><br>
+              <strong>Limitation:</strong> MDI is biased toward <em>high-cardinality features</em> (continuous variables or categorical variables with many unique values) because they offer more possible split points, artificially inflating their apparent importance. Use <em>permutation importance</em> on a hold-out set for an unbiased alternative.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4.3 BIAS-VARIANCE -->
+    <div class="subsection" id="bias-variance">
+      <div class="subsection-title">4.3 — Bias–Variance Tradeoff</div>
+
+      <div class="question-block">
+        <div class="q-tag classify">Classification <span class="difficulty hard">Hard</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Classify each scenario as <strong>high bias</strong>, <strong>high variance</strong>, <strong>well-balanced</strong>, or <strong>high noise</strong>:
+            <br><br>
+            (a) Train MSE = 0.05, Val MSE = 0.06<br>
+            (b) Train MSE = 0.08, Val MSE = 4.2<br>
+            (c) Train MSE = 3.5, Val MSE = 3.7<br>
+            (d) Train MSE = 0.01, Val MSE = 0.01 but both are above the irreducible error floor of 3.0
+          </div>
+          <details class="answer-reveal">
+            <summary>Full Classification</summary>
+            <div class="answer-body">
+              <strong>(a)</strong> 0.05 / 0.06 → <em>Well-balanced</em>. Low train error, very small generalization gap.<br>
+              <strong>(b)</strong> 0.08 / 4.2 → <em>High variance (overfitting)</em>. Model memorizes training data, fails on validation. Fix: regularize, more data, simpler model.<br>
+              <strong>(c)</strong> 3.5 / 3.7 → <em>High bias (underfitting)</em>. Both errors are high; gap is small. Model is too simple. Fix: add features, increase model complexity, longer training.<br>
+              <strong>(d)</strong> 0.01 / 0.01 but floor = 3.0 → <em>Impossible / data leakage or test contamination</em>. Errors below irreducible noise floor indicate a data leak (train and test share labels or identical rows).
+              <div class="key-insight">💡 The bias-variance decomposition: E[(y−ŷ)²] = Bias² + Variance + Irreducible Noise. You can never beat the noise floor regardless of model complexity.</div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 5: UNSUPERVISED LEARNING
+  ───────────────────────────────────────── -->
+  <section class="section" id="unsupervised">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <div class="section-title-block">
+        <h2>Unsupervised Learning</h2>
+        <span class="subtitle">Track C · Clustering & Anomaly Detection</span>
+      </div>
+    </div>
+
+    <!-- 5.1 CLUSTERING -->
+    <div class="subsection" id="clustering">
+      <div class="subsection-title">5.1 — Clustering Algorithms</div>
+
+      <table class="data-table">
+        <tr><th>Algorithm</th><th>Assigns To</th><th>Requires K?</th><th>Handles Non-Spherical?</th><th>Complexity</th></tr>
+        <tr><td><strong>K-Means</strong></td><td>Hard centroids</td><td>Yes</td><td>No</td><td>O(nkdi)</td></tr>
+        <tr><td><strong>K-Means++</strong></td><td>Hard centroids</td><td>Yes</td><td>No</td><td>Better init</td></tr>
+        <tr><td><strong>DBSCAN</strong></td><td>Density regions</td><td>No</td><td>Yes</td><td>O(n log n)</td></tr>
+        <tr><td><strong>Hierarchical</strong></td><td>Dendrogram</td><td>No (post-cut)</td><td>Partially</td><td>O(n² log n)</td></tr>
+        <tr><td><strong>GMM</strong></td><td>Soft (prob.)</td><td>Yes</td><td>Partially (elliptical)</td><td>O(nkd²i)</td></tr>
+      </table>
+
+      <!-- MCQ: K-Means failure -->
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            K-Means clustering is applied to a dataset with two crescent-shaped clusters. The algorithm consistently assigns points incorrectly. What is the fundamental reason?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>K was set too high, causing over-segmentation.</div>
+            <div class="opt"><span class="opt-key">B</span>K-Means converged to a local minimum due to poor centroid initialization.</div>
+            <div class="opt correct"><span class="opt-key">C</span>K-Means assumes convex, isotropic (spherical) clusters defined by Euclidean distance to centroids — crescent shapes violate this assumption.</div>
+            <div class="opt"><span class="opt-key">D</span>K-Means requires normalized features; the dataset was not standardized.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Explanation</summary>
+            <div class="answer-body">
+              <strong>Answer: C.</strong> K-Means minimizes within-cluster sum of squared Euclidean distances. Its Voronoi-partition decision boundaries are always linear (straight hyperplanes) in feature space — they literally cannot capture crescent, ring, or interleaved cluster shapes. Fix: use DBSCAN (density-based, no shape assumption), or apply kernel K-Means / spectral clustering which implicitly maps to a higher-dimensional space where crescents become separable.
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- CODE: Elbow method -->
+      <div class="question-block">
+        <div class="q-tag code">Coding <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Implement the <strong>elbow method</strong> to find the optimal K for K-Means clustering. Also compute the <strong>silhouette score</strong> for each K and explain what it measures.
+          </div>
+          <details class="answer-reveal">
+            <summary>Reference Implementation</summary>
+            <div class="answer-body">
+              <div class="code-block">
+                <div class="code-header"><span class="code-lang">Python · sklearn</span></div>
+                <pre><span class="kw">from</span> sklearn.cluster <span class="kw">import</span> KMeans
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> silhouette_score
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_blobs
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+X, _ = make_blobs(n_samples=<span class="nm">500</span>, centers=<span class="nm">4</span>, random_state=<span class="nm">42</span>)
+
+inertias, sil_scores, K_range = [], [], range(<span class="nm">2</span>, <span class="nm">11</span>)
+
+<span class="kw">for</span> k <span class="kw">in</span> K_range:
+    km     = KMeans(n_clusters=k, init=<span class="st">"k-means++"</span>, n_init=<span class="nm">10</span>, random_state=<span class="nm">42</span>)
+    labels = km.fit_predict(X)
+
+    inertias.append(km.inertia_)               <span class="cm"># WCSS for elbow plot</span>
+    sil_scores.append(silhouette_score(X, labels))  <span class="cm"># higher = better</span>
+
+<span class="cm"># Find elbow: largest second-difference in inertia</span>
+deltas  = np.diff(inertias)
+d2      = np.diff(deltas)
+elbow_k = K_range.start + np.argmin(d2) + <span class="nm">1</span>  <span class="cm"># +1 for 0-indexing offset</span>
+best_sil_k = K_range.start + np.argmax(sil_scores)
+
+print(<span class="st">f"Elbow K estimate: {elbow_k}"</span>)
+print(<span class="st">f"Best silhouette K: {best_sil_k} (score={max(sil_scores):.3f})"</span>)</pre>
+              </div>
+              <strong>Silhouette score</strong> s(i) = (b(i) − a(i)) / max(a(i), b(i)) where a(i) = mean intra-cluster distance and b(i) = mean distance to nearest other cluster. Score ∈ [−1, 1]: close to 1 = well-clustered; close to 0 = on boundary; negative = possibly wrong cluster.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5.2 ANOMALY DETECTION -->
+    <div class="subsection" id="anomaly">
+      <div class="subsection-title">5.2 — Anomaly Detection</div>
+
+      <div class="concept-card">
+        <h4>Key Methods</h4>
+        <p><strong>Statistical:</strong> Z-score, IQR (for univariate). <strong>Density-based:</strong> Isolation Forest, Local Outlier Factor (LOF). <strong>Reconstruction-based:</strong> Autoencoder (high reconstruction error → anomaly). <strong>Distance-based:</strong> k-NN distance. Choice depends on dimensionality, interpretability needs, and whether you need a contamination estimate.</p>
+      </div>
+
+      <!-- MCQ: isolation forest -->
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty hard">Hard</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Isolation Forest detects anomalies by building random trees. Which statement best explains <em>why anomalies are isolated with fewer splits</em>?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>Anomalies have extreme feature values that cause the tree to grow imbalanced toward them.</div>
+            <div class="opt correct"><span class="opt-key">B</span>Anomalies are sparse and far from other points; random axis-aligned splits isolate them quickly in few steps. Normal points are dense and require many splits to separate.</div>
+            <div class="opt"><span class="opt-key">C</span>Isolation Forest uses the training error signal to penalize anomalous points harder.</div>
+            <div class="opt"><span class="opt-key">D</span>Anomalies have lower feature variance, making them easier to partition.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Explanation</summary>
+            <div class="answer-body">
+              <strong>Answer: B.</strong> Isolation Forest's key insight: anomalies lie in low-density regions. A random split on any feature axis is likely to land between an anomaly and the bulk of data quickly. In contrast, a normal point surrounded by neighbors requires many recursive splits before it's isolated in its own leaf. Average path length ≈ log(n) for normal points; much shorter for anomalies. Anomaly score = 1 − E[path length] / c(n) where c(n) is the average path length of an unsuccessful BST search.
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Subjective: choosing threshold -->
+      <div class="question-block">
+        <div class="q-tag subjective">Subjective <span class="difficulty hard">Hard</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            In anomaly detection, labels are almost never available. Describe how you would choose a contamination threshold (the fraction of training data treated as anomalies) in an unsupervised setting.
+          </div>
+          <details class="answer-reveal">
+            <summary>Model Answer</summary>
+            <div class="answer-body">
+              Several strategies exist:
+              <ul>
+                <li><strong>Domain prior:</strong> Use known or estimated base rate. E.g., fraud is ~0.1% of transactions — set contamination=0.001.</li>
+                <li><strong>Score distribution inspection:</strong> Plot the histogram of anomaly scores. A bimodal distribution suggests a natural threshold at the valley between modes.</li>
+                <li><strong>ROC / PR curve with partial labels:</strong> If even a tiny labeled validation set exists (even 30–50 examples), compute AUC-PR and optimize threshold at the knee of the precision-recall curve.</li>
+                <li><strong>Sensitivity analysis:</strong> Try contamination ∈ {0.01, 0.05, 0.10} and report flagged anomalies for human review; domain experts select the operationally acceptable false-positive rate.</li>
+                <li><strong>Statistical heuristics:</strong> 3σ rule for Gaussian-ish data; beyond 1.5×IQR for boxplot-style detection.</li>
+              </ul>
+              The absence of labels makes this a calibration problem more than a model selection problem.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5.3 UNSUPERVISED EVAL -->
+    <div class="subsection" id="unsup-eval">
+      <div class="subsection-title">5.3 — Evaluating Unsupervised Models</div>
+
+      <div class="question-block">
+        <div class="q-tag classify">Classification <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Match each evaluation scenario to the appropriate metric:<br><br>
+            (a) You have ground-truth cluster labels and want to measure how well K-Means assignments agree<br>
+            (b) No labels available; you want to measure cluster compactness and separation<br>
+            (c) You used dimensionality reduction (PCA) before clustering and want to measure information preserved<br>
+            (d) You trained an autoencoder for anomaly detection and want to quantify reconstruction fidelity
+          </div>
+          <details class="answer-reveal">
+            <summary>Answers</summary>
+            <div class="answer-body">
+              <strong>(a) Adjusted Rand Index (ARI)</strong> — measures agreement between predicted and true labels, adjusted for chance. Range [−1, 1]; 1 = perfect. Also: Normalized Mutual Information (NMI).<br>
+              <strong>(b) Silhouette Score or Davies-Bouldin Index</strong> — Silhouette: high = compact well-separated clusters. Davies-Bouldin: lower = better (measures ratio of within-cluster scatter to between-cluster distance).<br>
+              <strong>(c) Explained Variance Ratio</strong> — sum of explained variance of retained PCA components. Typically target ≥ 95% for downstream clustering.<br>
+              <strong>(d) Reconstruction MSE / MAE on a held-out normal sample</strong> — low reconstruction error on normal data; high on anomalies. ROC-AUC if any labeled anomalies exist.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────
+       SECTION 6: RECOMMENDER SYSTEMS
+  ───────────────────────────────────────── -->
+  <section class="section" id="recommenders">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <div class="section-title-block">
+        <h2>Recommender Systems</h2>
+        <span class="subtitle">Track C · Exploring Advanced Methods</span>
+      </div>
+    </div>
+
+    <!-- 6.1 COLLABORATIVE FILTERING -->
+    <div class="subsection" id="collab-filter">
+      <div class="subsection-title">6.1 — Collaborative Filtering</div>
+
+      <div class="concept-card">
+        <h4>Memory-Based vs Model-Based CF</h4>
+        <p><strong>Memory-based (User-User / Item-Item):</strong> compute cosine or Pearson similarity between users/items directly from the rating matrix. Simple but doesn't scale to millions of users/items. <strong>Model-based (Matrix Factorization):</strong> decompose the rating matrix R ≈ UVᵀ where U ∈ ℝ^(users×k), V ∈ ℝ^(items×k). Learn latent factors via ALS (alternating least squares) or SGD. Scales well and handles sparsity better.</p>
+      </div>
+
+      <!-- MCQ: cold start -->
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty hard">Hard</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            A new user joins a streaming platform with no viewing history. Collaborative filtering recommends nothing useful. This is called the <strong>cold start problem</strong>. Which strategy is <em>most directly</em> targeted at solving it?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>Increase the number of latent factors in matrix factorization to improve precision.</div>
+            <div class="opt"><span class="opt-key">B</span>Use ALS instead of SGD for more stable convergence of existing user embeddings.</div>
+            <div class="opt correct"><span class="opt-key">C</span>Collect minimal demographic or preference data at onboarding (hybrid approach), or fall back to content-based filtering using item features only.</div>
+            <div class="opt"><span class="opt-key">D</span>Apply regularization to prevent overfitting to sparse user histories.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Explanation</summary>
+            <div class="answer-body">
+              <strong>Answer: C.</strong> Collaborative filtering requires historical interactions to compute similarities or learn embeddings — a brand-new user has no data for this. The fix is to use content-based filtering (recommends items similar to item attributes, not interaction history) until sufficient history accumulates, and/or to collect a brief onboarding quiz to initialize the user embedding. This hybrid approach — CF + CBF fallback — is the industry standard. Increasing latent factors (A) or using ALS (B) does nothing for users with no interactions.
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- CODE: user-user CF -->
+      <div class="question-block">
+        <div class="q-tag code">Coding <span class="difficulty hard">Hard</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Implement user-user collaborative filtering from scratch. Given a user-item rating matrix (with NaN for unrated), compute cosine similarity between users and predict a target user's unrated items using a top-K neighborhood.
+          </div>
+          <details class="answer-reveal">
+            <summary>Reference Implementation</summary>
+            <div class="answer-body">
+              <div class="code-block">
+                <div class="code-header"><span class="code-lang">Python · NumPy</span></div>
+                <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">cosine_similarity_masked</span>(R: np.ndarray) -> np.ndarray:
+    <span class="cm">"""Compute pairwise cosine similarity ignoring NaN entries."""</span>
+    n_users = R.shape[<span class="nm">0</span>]
+    sim = np.zeros((n_users, n_users))
+    <span class="kw">for</span> u <span class="kw">in</span> range(n_users):
+        <span class="kw">for</span> v <span class="kw">in</span> range(n_users):
+            <span class="kw">if</span> u == v:
+                sim[u, v] = <span class="nm">1.0</span>; <span class="kw">continue</span>
+            <span class="cm"># Only items rated by BOTH users</span>
+            mask = ~np.isnan(R[u]) & ~np.isnan(R[v])
+            <span class="kw">if</span> mask.sum() == <span class="nm">0</span>: <span class="kw">continue</span>
+            ru, rv = R[u, mask], R[v, mask]
+            denom = np.linalg.norm(ru) * np.linalg.norm(rv)
+            <span class="kw">if</span> denom > <span class="nm">0</span>: sim[u, v] = (ru @ rv) / denom
+    <span class="kw">return</span> sim
+
+
+<span class="kw">def</span> <span class="fn">predict_rating</span>(R, sim, user_id, item_id, K=<span class="nm">3</span>) -> <span class="tp">float</span>:
+    <span class="cm">"""Predict target user's rating for a given item."""</span>
+    <span class="cm"># Get neighbors who rated this item</span>
+    rated_mask = ~np.isnan(R[:, item_id])
+    rated_mask[user_id] = <span class="tp">False</span>  <span class="cm"># exclude self</span>
+
+    neighbors  = np.where(rated_mask)[<span class="nm">0</span>]
+    if len(neighbors) == <span class="nm">0</span>: <span class="kw">return</span> np.nanmean(R[user_id])
+
+    <span class="cm"># Top-K most similar neighbors</span>
+    sims = sim[user_id, neighbors]
+    topk = neighbors[np.argsort(sims)[::-<span class="nm">1</span>][:K]]
+    topk_sims = sim[user_id, topk]
+
+    numer = topk_sims @ R[topk, item_id]
+    denom = np.abs(topk_sims).sum()
+    <span class="kw">return</span> numer / denom <span class="kw">if</span> denom > <span class="nm">0</span> <span class="kw">else</span> np.nanmean(R[user_id])
+
+
+<span class="cm"># ── Demo ────────────────────────────────────────────</span>
+R = np.array([
+    [<span class="nm">5</span>, <span class="nm">4</span>, np.nan, <span class="nm">1</span>],
+    [<span class="nm">4</span>, np.nan, <span class="nm">4</span>, <span class="nm">1</span>],
+    [np.nan, <span class="nm">5</span>, <span class="nm">4</span>, <span class="nm">2</span>],
+    [<span class="nm">2</span>, <span class="nm">1</span>, np.nan, <span class="nm">5</span>]
+])
+
+sim  = cosine_similarity_masked(R)
+pred = predict_rating(R, sim, user_id=<span class="nm">0</span>, item_id=<span class="nm">2</span>, K=<span class="nm">2</span>)
+print(<span class="st">f"Predicted rating for user 0, item 2: {pred:.2f}"</span>)</pre>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6.2 CONTENT-BASED -->
+    <div class="subsection" id="content-filter">
+      <div class="subsection-title">6.2 — Content-Based Filtering</div>
+
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty medium">Medium</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Content-based filtering recommends items <em>similar to items a user has liked before</em>, using item features. Which of the following is a key <strong>advantage</strong> of content-based over collaborative filtering?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>It discovers serendipitous recommendations outside the user's known preferences.</div>
+            <div class="opt"><span class="opt-key">B</span>It leverages the wisdom of similar users to surface hidden preferences.</div>
+            <div class="opt correct"><span class="opt-key">C</span>It works for new items and new users as long as item features and minimal user preferences are available — no interaction history required.</div>
+            <div class="opt"><span class="opt-key">D</span>It automatically learns implicit user preferences without any item metadata.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Explanation</summary>
+            <div class="answer-body">
+              <strong>Answer: C.</strong> Content-based systems only need item features (genre, director, keywords, etc.) and a user's rated items to build a profile. They handle the new-item cold start well. Their weakness is the <em>filter bubble</em> — they over-recommend items similar to already-seen content (A is a weakness, not advantage). Collaborative filtering (B) is better at serendipity. True implicit preference learning (D) describes MF-based CF, not CBF.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6.3 RECSYS METRICS -->
+    <div class="subsection" id="rec-metrics">
+      <div class="subsection-title">6.3 — Recommender System Evaluation Metrics</div>
+
+      <div class="concept-card">
+        <h4>Key Metrics Reference</h4>
+        <p>RecSys evaluation has two regimes: <strong>rating prediction</strong> (use RMSE/MAE on held-out ratings) and <strong>ranking quality</strong> (use precision@K, recall@K, NDCG@K, MRR). The latter is more business-relevant since we care about top-K lists, not all ratings.</p>
+      </div>
+
+      <div class="formula">
+Precision@K  = |relevant ∩ top-K| / K
+Recall@K     = |relevant ∩ top-K| / |relevant|
+F1@K         = 2 × P@K × R@K / (P@K + R@K)
+
+DCG@K        = Σ_{i=1}^{K}  rel_i / log₂(i+1)
+NDCG@K       = DCG@K / IDCG@K        (IDCG = ideal DCG, perfect ordering)
+
+MRR          = (1/|queries|) Σ 1/rank_first_relevant
+      </div>
+
+      <!-- MCQ: NDCG -->
+      <div class="question-block">
+        <div class="q-tag mcq">MCQ <span class="difficulty hard">Hard</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            Two recommendation lists for the same user (3 relevant items total):<br><br>
+            List A: [✓, ✗, ✓, ✗, ✓] — relevant items at positions 1, 3, 5<br>
+            List B: [✓, ✓, ✓, ✗, ✗] — relevant items at positions 1, 2, 3<br><br>
+            Which list has higher NDCG@5 and why?
+          </div>
+          <div class="q-options">
+            <div class="opt"><span class="opt-key">A</span>List A — it has the first item correct, which is highest weighted.</div>
+            <div class="opt correct"><span class="opt-key">B</span>List B — it concentrates all relevant items at the top, matching the ideal ordering and yielding DCG closest to IDCG.</div>
+            <div class="opt"><span class="opt-key">C</span>Both are equal — both lists have the same number of relevant items in the top-5.</div>
+            <div class="opt"><span class="opt-key">D</span>List A — spreading recommendations avoids filter bubble, which NDCG penalizes.</div>
+          </div>
+          <details class="answer-reveal">
+            <summary>Calculation</summary>
+            <div class="answer-body">
+              <strong>Answer: B.</strong> DCG discounts by log₂(rank+1), so higher ranks are worth more.
+              <br><br>
+              List A DCG = 1/log₂(2) + 1/log₂(4) + 1/log₂(6) ≈ 1.000 + 0.500 + 0.387 = <strong>1.887</strong><br>
+              List B DCG = 1/log₂(2) + 1/log₂(3) + 1/log₂(4) ≈ 1.000 + 0.631 + 0.500 = <strong>2.131</strong><br>
+              IDCG = List B DCG = 2.131 (this IS the ideal order)
+              <br><br>
+              NDCG_A = 1.887 / 2.131 ≈ 0.885 | NDCG_B = 2.131 / 2.131 = <strong>1.000</strong>. List B wins.
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Final subjective -->
+      <div class="question-block">
+        <div class="q-tag subjective">Subjective <span class="difficulty hard">Hard</span></div>
+        <div class="q-card">
+          <div class="q-prompt">
+            You achieve RMSE = 0.85 on a test split of a movie rating dataset using matrix factorization. A colleague argues this is a good model. You argue RMSE alone is insufficient for a production recommender. Make your case.
+          </div>
+          <details class="answer-reveal">
+            <summary>Model Answer</summary>
+            <div class="answer-body">
+              RMSE measures rating prediction accuracy — how close predicted scores are to actual ratings. But in production, users don't see raw scores; they see <strong>ranked lists</strong>. A model with perfect RMSE could still produce terrible ranked recommendations if it consistently underestimates outlier loved movies that should appear at the top.
+              <br><br>
+              <strong>Missing dimensions from RMSE alone:</strong>
+              <ul>
+                <li><strong>Ranking quality:</strong> NDCG@10 / Precision@10 measure whether top-displayed items are actually relevant.</li>
+                <li><strong>Coverage:</strong> What fraction of the catalog gets recommended? A model exploiting only popular items has high coverage of clicks but poor diversity.</li>
+                <li><strong>Novelty & Serendipity:</strong> Does the model surface non-obvious items the user would genuinely enjoy? Important for long-tail monetization.</li>
+                <li><strong>Business metrics:</strong> CTR (click-through rate), dwell time, watch completion, return visit rate — the true north stars.</li>
+                <li><strong>Fairness:</strong> Are niche genres / minority user groups receiving proportional recommendation quality?</li>
+              </ul>
+              A 0.85 RMSE from a naive popularity baseline would score poorly on all of the above. Offline metrics should always be validated against online A/B tests.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="margin-top: 80px; padding: 40px 0; border-top: 1px solid var(--border); text-align: center;">
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.1em;">
+      WORKERA ELO PREP GUIDE &nbsp;·&nbsp; ML FUNDAMENTALS &nbsp;·&nbsp; 300-POINT SCALE &nbsp;·&nbsp; CAT ADAPTIVE FORMAT
+    </div>
+    <div style="margin-top: 12px; font-family: 'Syne', sans-serif; font-size: 13px; color: #475569;">
+      All questions modelled on Workera's Computerized Adaptive Test format. Good luck, Parth.
+    </div>
+  </footer>
+
+</main>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop;
+  const height = doc.scrollHeight - doc.clientHeight;
+  document.getElementById('progress-bar').style.width = (scrolled / height * 100) + '%';
+});
+
+// Active nav link highlight
+const sections = document.querySelectorAll('.section, .subsection');
+const navLinks = document.querySelectorAll('.nav-link');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

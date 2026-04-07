@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workera ELO — RAI Governance & Ethical Fundamentals</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #16161f;
+    --bg4: #1c1c28;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8e8f0;
+    --text2: #9898b0;
+    --text3: #5a5a70;
+    --accent: #7b61ff;
+    --accent2: #a78bfa;
+    --accent3: #c4b5fd;
+    --teal: #2dd4bf;
+    --teal2: #99f6e4;
+    --amber: #fbbf24;
+    --amber2: #fde68a;
+    --rose: #fb7185;
+    --rose2: #fecdd3;
+    --green: #4ade80;
+    --green2: #bbf7d0;
+    --blue: #60a5fa;
+    --blue2: #bfdbfe;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ─── GRID NOISE BACKGROUND ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(123,97,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(123,97,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── LAYOUT ─── */
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* ─── HEADER ─── */
+  header {
+    padding: 60px 0 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .header-eyebrow::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--accent), transparent); max-width: 120px; }
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  header h1 em { font-style: italic; color: var(--accent3); }
+  .header-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+  .pill-purple { border-color: rgba(167,139,250,0.3); color: var(--accent3); background: rgba(123,97,255,0.08); }
+  .pill-teal { border-color: rgba(45,212,191,0.3); color: var(--teal); background: rgba(45,212,191,0.06); }
+  .pill-amber { border-color: rgba(251,191,36,0.3); color: var(--amber); background: rgba(251,191,36,0.06); }
+  .pill-rose { border-color: rgba(251,113,133,0.3); color: var(--rose); background: rgba(251,113,133,0.06); }
+  .pill-blue { border-color: rgba(96,165,250,0.3); color: var(--blue); background: rgba(96,165,250,0.06); }
+  .pill-green { border-color: rgba(74,222,128,0.3); color: var(--green); background: rgba(74,222,128,0.06); }
+
+  /* ─── NAV ─── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+  }
+  .nav-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 14px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+    text-decoration: none;
+    display: block;
+  }
+  .nav-tab:hover { color: var(--text2); }
+  .nav-tab.active { color: var(--accent2); border-bottom-color: var(--accent); }
+
+  /* ─── SECTION ─── */
+  section {
+    padding: 56px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  section:last-child { border-bottom: none; }
+
+  .section-header { margin-bottom: 40px; }
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 30px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .section-desc {
+    color: var(--text2);
+    font-size: 14px;
+    line-height: 1.7;
+    max-width: 680px;
+  }
+
+  /* ─── TOPIC GROUP ─── */
+  .topic-group { margin-bottom: 48px; }
+  .topic-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topic-label-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+  /* ─── CONCEPT CARD ─── */
+  .concept {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .concept::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--accent), transparent);
+    border-radius: 3px 0 0 3px;
+  }
+  .concept h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
+  }
+  .concept p, .concept li {
+    font-size: 13.5px;
+    color: var(--text2);
+    line-height: 1.75;
+  }
+  .concept ul { padding-left: 16px; }
+  .concept li { margin-bottom: 4px; }
+  .concept strong { color: var(--text); font-weight: 600; }
+  .concept em { color: var(--accent3); font-style: normal; }
+  .concept.teal::before { background: linear-gradient(180deg, var(--teal), transparent); }
+  .concept.amber::before { background: linear-gradient(180deg, var(--amber), transparent); }
+  .concept.rose::before { background: linear-gradient(180deg, var(--rose), transparent); }
+  .concept.blue::before { background: linear-gradient(180deg, var(--blue), transparent); }
+  .concept.green::before { background: linear-gradient(180deg, var(--green), transparent); }
+
+  /* ─── QUESTION BLOCK ─── */
+  .q-wrap { margin-bottom: 10px; }
+  .q-block {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bg3);
+  }
+  .q-header {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .q-header:hover { background: var(--bg4); }
+  .q-meta { display: flex; align-items: center; gap: 6px; flex-shrink: 0; flex-wrap: wrap; padding-top: 1px; }
+  .q-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .badge-mcq { background: rgba(96,165,250,0.15); color: var(--blue); border: 1px solid rgba(96,165,250,0.2); }
+  .badge-sub { background: rgba(45,212,191,0.12); color: var(--teal); border: 1px solid rgba(45,212,191,0.2); }
+  .badge-code { background: rgba(123,97,255,0.15); color: var(--accent3); border: 1px solid rgba(123,97,255,0.2); }
+  .badge-class { background: rgba(251,191,36,0.12); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+  .badge-scenario { background: rgba(251,113,133,0.12); color: var(--rose); border: 1px solid rgba(251,113,133,0.2); }
+  .badge-easy { background: rgba(74,222,128,0.1); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+  .badge-med { background: rgba(251,191,36,0.1); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+  .badge-hard { background: rgba(251,113,133,0.1); color: var(--rose); border: 1px solid rgba(251,113,133,0.2); }
+  .q-text {
+    flex: 1;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .q-chevron {
+    font-size: 12px;
+    color: var(--text3);
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: transform 0.2s;
+  }
+  .q-block.open .q-chevron { transform: rotate(180deg); }
+  .q-body {
+    display: none;
+    padding: 0 20px 18px;
+    border-top: 1px solid var(--border);
+  }
+  .q-block.open .q-body { display: block; }
+  .q-options { margin: 12px 0 4px; }
+  .q-opt {
+    font-size: 13px;
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    border-radius: 7px;
+    color: var(--text2);
+    line-height: 1.55;
+    border: 1px solid transparent;
+  }
+  .q-opt.correct { background: rgba(74,222,128,0.08); border-color: rgba(74,222,128,0.2); color: var(--green2); }
+  .q-opt.wrong { background: var(--bg4); }
+  .answer-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin: 14px 0 6px;
+  }
+  .answer-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.75;
+  }
+  .answer-box strong { color: var(--text); font-weight: 600; }
+  .answer-box br { margin-bottom: 4px; }
+
+  /* ─── CODE BLOCK ─── */
+  pre {
+    background: #050508;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    margin: 10px 0;
+  }
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: #c4b5fd;
+    line-height: 1.65;
+  }
+  pre .kw { color: #fb7185; }
+  pre .fn { color: #60a5fa; }
+  pre .st { color: #4ade80; }
+  pre .cm { color: #4a4a60; }
+  pre .nm { color: #fbbf24; }
+  pre .op { color: #9898b0; }
+
+  /* ─── QUICK REF TABLE ─── */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .ref-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .ref-card h5 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent2);
+    letter-spacing: 0.03em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+  .ref-card ul { padding-left: 14px; }
+  .ref-card li { font-size: 12.5px; color: var(--text2); margin-bottom: 5px; line-height: 1.55; }
+  .ref-card li strong { color: var(--text); font-weight: 600; }
+
+  /* ─── FORMULA BLOCK ─── */
+  .formula-block {
+    background: #050508;
+    border: 1px solid var(--border2);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.9;
+    overflow-x: auto;
+  }
+  .formula-block .fl { color: var(--accent3); }
+  .formula-block .fv { color: var(--teal); }
+  .formula-block .fc { color: var(--text3); }
+  .formula-block .fw { color: var(--amber); }
+
+  /* ─── TRAP BOX ─── */
+  .trap-item {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .trap-item:last-child { border-bottom: none; }
+  .trap-icon {
+    width: 28px;
+    height: 28px;
+    background: rgba(251,113,133,0.1);
+    border: 1px solid rgba(251,113,133,0.2);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 13px;
+    color: var(--rose);
+    font-family: 'DM Mono', monospace;
+    margin-top: 1px;
+  }
+  .trap-content h5 { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .trap-content p { font-size: 12.5px; color: var(--text2); line-height: 1.65; }
+  .trap-content strong { color: var(--accent3); font-weight: 600; }
+
+  /* ─── DIVIDER ─── */
+  .divider { height: 1px; background: var(--border); margin: 36px 0; }
+
+  /* ─── BACK TO TOP ─── */
+  .back-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    text-decoration: none;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-top: 8px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .back-top:hover { color: var(--text2); border-color: var(--border2); }
+
+  /* ─── PROGRESS BAR TOP ─── */
+  #progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--teal));
+    width: 0%;
+    z-index: 200;
+    transition: width 0.1s linear;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section-header { animation: fadeUp 0.5s ease both; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 600px) {
+    .q-meta { flex-direction: row; }
+    header h1 { font-size: 28px; }
+    .section-title { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview" class="nav-tab active">Overview</a>
+    <a href="#s1" class="nav-tab">1 · Responsible AI Use</a>
+    <a href="#s2" class="nav-tab">2 · Governance</a>
+    <a href="#s3" class="nav-tab">3 · Fairness & Inclusion</a>
+    <a href="#s4" class="nav-tab">4 · Quick Reference</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ══════════ HEADER ══════════ -->
+  <header id="overview">
+    <div class="header-eyebrow">Workera ELO Assessment · RAI Domain</div>
+    <h1>Governance &amp; <em>Ethical</em><br>Fundamentals</h1>
+    <p style="color:var(--text2); font-size:14px; max-width:620px; line-height:1.75;">
+      Adaptive CAT format using ELO scoring. Your 300-point score rises or falls based on performance at your estimated difficulty level. After ~20 questions the system places you: <strong style="color:var(--text)">Developing (0–100) → Proficient (101–200) → Accomplished (201–300)</strong>. This material covers every subtopic with concepts + representative exam questions.
+    </p>
+    <div class="header-meta">
+      <span class="pill pill-purple">~20 questions / session</span>
+      <span class="pill pill-teal">Adaptive difficulty</span>
+      <span class="pill pill-amber">4 major domains</span>
+      <span class="pill pill-rose">Scenario-heavy</span>
+      <span class="pill pill-blue">ELO scoring</span>
+      <span class="pill pill-green">300-point scale</span>
+    </div>
+  </header>
+
+  <!-- ══════════ SECTION 1 ══════════ -->
+  <section id="s1">
+    <div class="section-header">
+      <div class="section-num">01 / 04</div>
+      <div class="section-title">Responsible AI Use &amp; Legal Compliance</div>
+      <p class="section-desc">Societal, economic, and legal dimensions of AI deployment — labor disruption, IP, PII, sector-specific regulations, and identifying ethical vs unethical applications.</p>
+    </div>
+
+    <!-- ETHICS RISK SOCIETAL IMPACT -->
+    <div class="topic-group">
+      <div class="topic-label"><span class="topic-label-dot"></span>Ethics, Risk &amp; Societal Impact</div>
+
+      <div class="concept">
+        <h4>AI &amp; Labour / Economic Systems</h4>
+        <p>AI displaces routine cognitive and physical tasks (<strong>substitution effect</strong>) while creating new roles (<strong>augmentation effect</strong>). Key frameworks: task-based model of labour (Acemoglu &amp; Restrepo), capital–labour substitution, frictional unemployment from skills mismatch. Distributional effects are unequal — low-wage routine jobs face highest displacement; high-skill knowledge workers see augmentation. Policy responses under debate: Universal Basic Income, reskilling mandates, and taxation of automation.</p>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-mcq">MCQ</span>
+              <span class="q-badge badge-med">Medium</span>
+            </div>
+            <div class="q-text">A logistics company deploys AI to automate route planning, displacing 40% of its planning analysts. Which economic concept BEST describes the short-term labour market outcome?</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="q-options">
+              <div class="q-opt wrong">A. Structural surplus — permanent oversupply of planning skills economy-wide</div>
+              <div class="q-opt correct">B. Frictional structural unemployment — analysts possess skills not immediately matched to new AI-adjacent roles</div>
+              <div class="q-opt wrong">C. Cyclical unemployment — caused by reduced aggregate demand</div>
+              <div class="q-opt wrong">D. Technological unemployment is self-correcting within 6 months via wage adjustment</div>
+            </div>
+            <div class="answer-label">Explanation</div>
+            <div class="answer-box">The scenario describes <strong>structural unemployment</strong> with a frictional lag: skills exist but don't match new openings. Cyclical unemployment is demand-driven (recessions), not technology-driven. "Structural surplus economy-wide" overstates scope — only this firm/role is disrupted. The 6-month self-correction claim ignores reskilling time for knowledge-intensive transitions. Workera tests your ability to precisely apply economic vocabulary to AI scenarios.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-sub">Subjective</span>
+              <span class="q-badge badge-hard">Hard</span>
+            </div>
+            <div class="q-text">Explain why AI-driven productivity gains may not reduce overall unemployment in the long run, but may still increase economic inequality. Reference at least two economic mechanisms.</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="answer-label">Model Answer</div>
+            <div class="answer-box">
+              <strong>Mechanism 1 — Capital–labour substitution and income share shift:</strong> AI raises the marginal productivity of capital relative to labour. Firms substitute capital (AI systems) for routine labour, shifting income share from wages to capital returns. Owners of AI capital capture productivity gains; displaced workers do not. Even if new jobs are created, they may be lower-wage service roles, widening the wage distribution.<br><br>
+              <strong>Mechanism 2 — Skills-biased technological change (SBTC):</strong> AI complements high-skill workers (engineers, data scientists, managers) while substituting for mid-skill routine workers (clerks, analysts). This polarises the labour market — demand rises at high and low ends, hollowing out middle-wage roles. The result is wage divergence even at constant employment rates.<br><br>
+              <strong>Why total employment may recover:</strong> New industries emerge (AI maintenance, prompt engineering, AI ethics roles), and reduced prices from AI-driven productivity stimulate demand in other sectors. However, the distributional split persists unless redistributive mechanisms (progressive taxation, UBI, wage subsidies) are active.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept teal" style="margin-top:16px;">
+        <h4>Ethical vs Unethical AI Applications</h4>
+        <p>Key dimensions: transparency, consent, harm potential, reversibility, and vulnerability of affected population. <strong>Unethical patterns:</strong> manipulative recommendation systems, discriminatory automated hiring, surveillance without consent, deepfake generation, adversarial nudging. <strong>Ethical AI exhibits:</strong> explainability, redress mechanisms, human oversight, and proportionality of data use to purpose.</p>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-class">Classification</span>
+              <span class="q-badge badge-med">Medium</span>
+            </div>
+            <div class="q-text">Classify each as Ethical, Unethical, or Context-Dependent: (a) AI hiring tool trained on 10 years of historical promotions data; (b) AI chatbot that discloses it is AI; (c) Predictive policing in high-poverty zip codes; (d) AI medical diagnosis requiring physician sign-off.</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="answer-label">Answer</div>
+            <div class="answer-box">
+              <strong>(a) Unethical / High Risk:</strong> Historical promotions data encodes past discrimination (gender, race); the model learns and perpetuates bias, violating fairness and anti-discrimination law.<br><br>
+              <strong>(b) Ethical:</strong> Disclosure satisfies transparency and informed consent norms; users can calibrate trust appropriately.<br><br>
+              <strong>(c) Context-Dependent → Likely Unethical without safeguards:</strong> If training data reflects biased policing patterns, the model amplifies systemic racism. Human oversight, audit trails, and community consent are minimum requirements. In current practice, almost universally criticised due to feedback loop effects.<br><br>
+              <strong>(d) Ethical:</strong> Human-in-the-loop with physician override preserves accountability; AI acts as decision support, not autonomous decision-maker. Proportionate use of medical data for clinical benefit.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept amber" style="margin-top:16px;">
+        <h4>IP and Copyright in AI-Generated Content</h4>
+        <ul>
+          <li><strong>US Copyright Office position (2023, Zarya of the Dawn):</strong> AI outputs alone are not copyrightable; human-curated/selected outputs may qualify partially.</li>
+          <li><strong>Originality requirement (Feist standard):</strong> Human authorship required for copyright — AI alone cannot be an author.</li>
+          <li><strong>Fair use factors:</strong> Purpose, nature of work, amount used, market effect.</li>
+          <li><strong>Training data scraping liability:</strong> Active litigation — Getty Images v. Stability AI, Authors Guild v. OpenAI — establishing precedent.</li>
+          <li><strong>EU AI Act (Art. 53):</strong> Requires disclosure when AI-generated content is published; general-purpose AI providers must publish training data summaries.</li>
+          <li><strong>Business risk:</strong> Always check indemnification clauses in commercial AI API terms (Adobe Firefly, OpenAI offer indemnification; open-source tools do not).</li>
+        </ul>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-scenario">Scenario</span>
+              <span class="q-badge badge-hard">Hard</span>
+            </div>
+            <div class="q-text">A marketing agency uses a generative AI tool to create 50 product images for a client campaign. The client claims copyright and plans to register them. What legal and governance issues should the agency flag?</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="answer-label">Model Answer</div>
+            <div class="answer-box">
+              <strong>1. Copyright unregistrability:</strong> Purely AI-generated images lack human authorship — cannot be registered under current US Copyright Office guidance. If a human materially curated/arranged the images, those specific creative choices may qualify.<br><br>
+              <strong>2. Training data liability:</strong> If the AI model was trained on copyrighted images without licence, there is potential downstream liability for the agency and client.<br><br>
+              <strong>3. Contractual indemnification:</strong> Review the AI vendor's ToS — commercial tools (Adobe Firefly, DALL-E via OpenAI API) offer indemnification; open-source tools do not.<br><br>
+              <strong>4. Disclosure obligations:</strong> EU AI Act requires labelling AI-generated content. If the campaign targets EU consumers, non-disclosure is a regulatory violation.<br><br>
+              <strong>Governance recommendation:</strong> Document human creative decisions made during the process, use an indemnified commercial AI tool, disclose AI involvement per applicable regulations, and advise client against copyright registration of purely generated outputs.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept rose" style="margin-top:16px;">
+        <h4>Safety Risks and Unintended Consequences</h4>
+        <p>Categories: <strong>specification gaming</strong> (reward hacking), <strong>distributional shift</strong> (model fails on out-of-distribution inputs), <strong>feedback loops</strong> (AI decisions affect future training data), <strong>emergent capabilities</strong> (unexpected behaviours at scale), and <strong>tail risks</strong> (low-probability, high-consequence failures). Key frameworks: NIST AI RMF (Map, Measure, Manage, Govern), ISO 42001, EU AI Act risk tiers (unacceptable, high, limited, minimal).</p>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-mcq">MCQ</span>
+              <span class="q-badge badge-med">Medium</span>
+            </div>
+            <div class="q-text">A content moderation AI trained on 2019 data is deployed in 2024. It misclassifies new slang as benign. This failure is BEST described as:</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="q-options">
+              <div class="q-opt wrong">A. Reward hacking — the model exploits a loophole in its objective</div>
+              <div class="q-opt wrong">B. Specification gaming — the model satisfies the letter but not the spirit of the objective</div>
+              <div class="q-opt correct">C. Distributional shift — the deployment distribution differs from the training distribution</div>
+              <div class="q-opt wrong">D. Emergent capability — unexpected behaviour arising from model scale</div>
+            </div>
+            <div class="answer-label">Explanation</div>
+            <div class="answer-box"><strong>Distributional shift</strong> (also called dataset shift / covariate shift) occurs when the statistical properties of deployment inputs differ from training data. Language evolves; 2024 slang was not in 2019 training data. Reward hacking and specification gaming involve the model finding loopholes in its objective function — a training-time phenomenon. Emergent capabilities refer to qualitatively new behaviours appearing at scale.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept blue" style="margin-top:16px;">
+        <h4>Open-Source AI: Societal Impact</h4>
+        <p><strong>Benefits:</strong> democratisation of access, reproducibility, faster research iteration, auditability. <strong>Risks:</strong> misuse potential (no usage controls), liability gaps, uneven capability — fine-tuned open models can remove safety guardrails. Key cases: Meta's Llama 2/3 releases sparked debate on responsible release norms. <strong>Responsible release practices:</strong> staged rollout, model cards (Gebru et al.), safety benchmarking before release, use-case restrictions in licences (RAIL licence — Responsible AI Licence).</p>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-sub">Subjective</span>
+              <span class="q-badge badge-hard">Hard</span>
+            </div>
+            <div class="q-text">A foundation model lab is deciding whether to release model weights openly. Construct a structured argument for why open release may be net-beneficial, then identify the strongest counterargument and how governance policy should address it.</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="answer-label">Model Answer</div>
+            <div class="answer-box">
+              <strong>Pro-release argument:</strong> (1) Auditability — external researchers can inspect weights for hidden biases and failure modes closed labs may suppress. (2) Democratisation — lowers barriers for researchers and governments who cannot afford API access, reducing AI concentration. (3) Reproducibility — science advances faster with verifiable baselines. (4) Competitive pressure on safety — open models force closed labs to improve.<br><br>
+              <strong>Strongest counterargument — dual-use misuse:</strong> Open weights enable bad actors to remove safety fine-tuning, run the model locally (bypassing API monitoring), and generate harmful content at scale. Unlike a published paper (static knowledge), released weights are directly executable tools.<br><br>
+              <strong>Governance policy response:</strong> (1) Tiered release — openly release smaller, less capable models; gate frontier models via researcher registration. (2) Responsible AI Licences (RAIL) — legally enforceable use restrictions. (3) Model cards and safety benchmarks published alongside weights. (4) Staged rollout with red-teaming period. (5) International coordination to prevent regulatory arbitrage.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- LEGAL COMPLIANCE -->
+    <div class="topic-group">
+      <div class="topic-label"><span class="topic-label-dot" style="background:var(--teal)"></span>Legal and Organisational Compliance</div>
+
+      <div class="concept teal">
+        <h4>Data Protection Laws Relevant to AI</h4>
+        <ul>
+          <li><strong>GDPR (EU):</strong> Lawful basis for processing (Art. 6), automated decision-making rights (Art. 22 — right to human review), data minimisation, purpose limitation. Fines up to 4% global annual turnover.</li>
+          <li><strong>CCPA/CPRA (California):</strong> Right to opt out of sale of personal data, right to know, delete, and correct.</li>
+          <li><strong>India DPDP Act 2023:</strong> Consent-first framework, Data Protection Board, fiduciary obligations for "significant data fiduciaries".</li>
+          <li><strong>Anti-discrimination laws:</strong> Title VII (US employment), ECOA (credit), Fair Housing Act — AI tools in covered domains must not produce disparate impact on protected classes.</li>
+          <li><strong>EU AI Act (2024):</strong> Risk-tiered regulation. Prohibited uses (social scoring, real-time biometric surveillance). High-risk systems (hiring, credit, infrastructure) require conformity assessments, human oversight, logging.</li>
+        </ul>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-mcq">MCQ</span>
+              <span class="q-badge badge-med">Medium</span>
+            </div>
+            <div class="q-text">Under GDPR Article 22, an individual has been rejected for a bank loan by a fully automated AI system with no human review. What right does the individual hold?</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="q-options">
+              <div class="q-opt wrong">A. Right to erasure of their data from the model's training set</div>
+              <div class="q-opt correct">B. Right not to be subject to solely automated decisions with significant effects, and to request human review</div>
+              <div class="q-opt wrong">C. Right to receive the model's source code for inspection</div>
+              <div class="q-opt wrong">D. Right to compensation equal to the loan amount</div>
+            </div>
+            <div class="answer-label">Explanation</div>
+            <div class="answer-box">Art. 22 GDPR prohibits purely automated decisions that produce "legal or similarly significant effects" unless an exception applies (explicit consent, contract necessity, member state law). The data subject can request human intervention, express their point of view, and contest the decision. Right to erasure (Art. 17) addresses deletion of personal data. Source code access is not a GDPR right. Compensation requires demonstrated damage (Art. 82).</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept amber" style="margin-top:12px;">
+        <h4>PII in AI Systems — Limitations and Risks</h4>
+        <p>PII (Personally Identifiable Information): any data that can identify an individual directly or through combination (quasi-identifiers). <strong>In AI pipelines:</strong> PII risks arise at data collection (scraping public PII without consent), training (memorisation — LLMs can regurgitate training PII), inference (user inputs stored and used for retraining), and output (model hallucinating real personal details). <strong>Mitigations:</strong> differential privacy (DP-SGD), k-anonymity, data masking, PII scrubbing before training, access controls on inference logs, user consent for training on conversations.</p>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-scenario">Scenario</span>
+              <span class="q-badge badge-hard">Hard</span>
+            </div>
+            <div class="q-text">A healthcare SaaS company trains a clinical NLP model on de-identified patient records. A researcher later demonstrates the model can be prompted to reproduce near-exact patient notes. What failures occurred and what technical + governance remedies apply?</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="answer-label">Model Answer</div>
+            <div class="answer-box">
+              <strong>Failures:</strong><br>
+              1. <strong>Inadequate de-identification:</strong> Removed obvious PII (names, DOB) but retained rare combinations of clinical details enabling re-identification — violating HIPAA Safe Harbor or Expert Determination standards.<br>
+              2. <strong>Training data memorisation:</strong> LLMs memorise verbatim sequences, especially rare records. The model learned and can reproduce individual patient notes.<br>
+              3. <strong>Lack of membership inference testing:</strong> The company failed to test whether an adversary could determine if a specific record was in the training set.<br><br>
+              <strong>Technical remedies:</strong><br>
+              — <strong>Differential privacy (DP-SGD):</strong> Adds calibrated noise to gradients, bounding individual record influence at cost of some utility.<br>
+              — <strong>Canary testing:</strong> Insert synthetic records pre-training; test post-training whether they can be extracted.<br>
+              — <strong>Synthetic data generation:</strong> Use a privacy-preserving GAN instead of real records.<br>
+              — <strong>Output filtering:</strong> Detect and block responses matching training records.<br><br>
+              <strong>Governance remedies:</strong> HIPAA Business Associate Agreement (BAA) with model provider. IRB review for secondary use of patient data. Model audit and red-team adversarial prompting before deployment. Incident response: notify affected patients (HIPAA Breach Notification Rule), report to HHS.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept green" style="margin-top:12px;">
+        <h4>Sector-Specific Regulatory Requirements</h4>
+        <ul>
+          <li><strong>Healthcare:</strong> HIPAA — PHI handling, BAAs; FDA oversight for Software as Medical Device (SaMD); EU MDR for AI diagnostics.</li>
+          <li><strong>Finance:</strong> SR 11-7 (Fed model risk management), ECOA/Reg B (anti-discrimination in credit), FINRA rules for AI in trading.</li>
+          <li><strong>Employment:</strong> NYC Local Law 144 (bias audits for automated employment decision tools), EEOC guidance on AI hiring, Illinois AI Video Interview Act.</li>
+          <li><strong>Criminal Justice:</strong> COMPAS recidivism tool controversies; several US states restrict or require audits for risk assessment tools in bail/sentencing.</li>
+          <li><strong>Education:</strong> FERPA (student data privacy), algorithmic proctoring controversies, FTC scrutiny of EdTech data practices.</li>
+        </ul>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-class">Classification</span>
+              <span class="q-badge badge-med">Medium</span>
+            </div>
+            <div class="q-text">Classify each AI system under its primary regulatory framework: (a) An AI that scores job applicants' video interviews in NYC; (b) An AI that flags suspicious transactions at a US bank; (c) An AI that recommends chemotherapy dosages; (d) An AI that predicts recidivism risk for bail decisions.</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="answer-label">Answer</div>
+            <div class="answer-box">
+              <strong>(a)</strong> NYC Local Law 144 (mandatory annual bias audit by independent auditor) + Illinois AI Video Interview Act (candidate consent required) + EEOC anti-discrimination guidelines.<br><br>
+              <strong>(b)</strong> BSA/AML regulations + SR 11-7 Fed model risk management + FinCEN guidance + EU AI Act "high risk" if deployed in EU.<br><br>
+              <strong>(c)</strong> FDA regulation as Software as a Medical Device (SaMD) — Class II or III; requires 510(k) clearance or PMA; HIPAA for patient data; EU MDR/IVDR if deployed in EU.<br><br>
+              <strong>(d)</strong> State-level risk assessment statutes (varies: some states ban, some require disclosure); EU AI Act classifies as "high risk" under administration of justice; Fourth Amendment considerations in US. Most legally ambiguous category — no single federal framework.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SECTION 2 ══════════ -->
+  <section id="s2">
+    <div class="section-header">
+      <div class="section-num">02 / 04</div>
+      <div class="section-title">AI Governance and Oversight</div>
+      <p class="section-desc">Accountability structures, documentation practices, role assignment, policy design, human-AI collaboration boundaries, and accountability frameworks like NIST AI RMF and ISO 42001.</p>
+    </div>
+
+    <div class="topic-group">
+      <div class="topic-label"><span class="topic-label-dot" style="background:var(--blue)"></span>Roles, Accountability &amp; Documentation</div>
+
+      <div class="concept blue">
+        <h4>Ownership and Accountability Structures</h4>
+        <p>Key principle: AI systems must have a clearly identifiable human or organisational owner responsible for outcomes. <strong>RACI governance:</strong> Responsible (builds/operates), Accountable (owns outcome — typically senior leadership), Consulted (domain experts, legal, ethics), Informed (impacted stakeholders). The <strong>EU AI Act</strong> mandates a "provider" (develops/deploys) vs "deployer" (uses in its own context) distinction with separate obligations. <strong>Diffuse accountability ("accountability gap"):</strong> occurs when multiple parties each partially contribute and none bears full responsibility — a key governance failure pattern.</p>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-mcq">MCQ</span>
+              <span class="q-badge badge-med">Medium</span>
+            </div>
+            <div class="q-text">An AI model developed by a third-party vendor is deployed by a hospital to triage emergency patients. A patient is harmed due to a model error. Under the EU AI Act provider/deployer distinction, which party bears primary accountability?</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="q-options">
+              <div class="q-opt wrong">A. The third-party vendor exclusively, as they built the model</div>
+              <div class="q-opt correct">B. The hospital (deployer) bears primary operational accountability; the vendor (provider) has obligations for the system's fundamental safety</div>
+              <div class="q-opt wrong">C. Neither party — AI systems have no legal person responsible</div>
+              <div class="q-opt wrong">D. The individual clinician who reviewed the AI output</div>
+            </div>
+            <div class="answer-label">Explanation</div>
+            <div class="answer-box"><strong>Deployers</strong> (who put AI into use in their specific context) bear responsibility for appropriate use, human oversight implementation, and monitoring in their deployment context. The <strong>provider</strong> bears obligations for the system's technical conformity and fundamental safety. Both can share liability — the hospital for failing to implement required human oversight; the vendor if the model was fundamentally unsafe. Individual clinician liability applies separately under medical malpractice.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept" style="margin-top:12px;">
+        <h4>AI Documentation: Model Cards, Datasheets, Risk Registers</h4>
+        <ul>
+          <li><strong>Model Cards (Mitchell et al., 2019):</strong> Intended use, performance metrics disaggregated by group, limitations, ethical considerations, out-of-scope uses. Standard for major model releases.</li>
+          <li><strong>Datasheets for Datasets (Gebru et al., 2021):</strong> Motivation, composition, collection process, preprocessing, uses, distribution, maintenance. Equivalent of a datasheet for physical components.</li>
+          <li><strong>Risk Registers:</strong> Living documents tracking identified risks, likelihood, severity, mitigation actions, owners, and review dates. Required under NIST AI RMF "Manage" function.</li>
+          <li><strong>AI Impact Assessments (AIIA):</strong> Pre-deployment evaluation of potential harms across affected stakeholders. Analogous to DPIA under GDPR for high-risk AI.</li>
+        </ul>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-sub">Subjective</span>
+              <span class="q-badge badge-med">Medium</span>
+            </div>
+            <div class="q-text">Your team has built an AI resume screening tool for a Fortune 500 company. You are asked to produce a model card. What must it contain, and which sections are most critical for legal compliance?</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="answer-label">Model Answer</div>
+            <div class="answer-box">
+              <strong>Required sections:</strong><br>
+              1. Model details: architecture, training date, version, authors, contact.<br>
+              2. Intended use AND explicitly listed out-of-scope uses (e.g., "not for final hiring decisions without human review").<br>
+              3. Training data: sources, preprocessing, known biases, demographic coverage.<br>
+              4. Performance metrics: overall accuracy AND disaggregated by gender, race, age.<br>
+              5. Limitations and biases: known failure modes, demographic groups where performance degrades.<br>
+              6. Ethical considerations: risks of misuse, consent mechanisms, redress process for candidates.<br>
+              7. Caveats and recommendations: required human oversight, refresh cadence.<br><br>
+              <strong>Most legally critical sections:</strong><br>
+              — <strong>Disaggregated performance metrics</strong> (NYC LL144 requires annual independent bias audit; the model card is the audit's evidence base).<br>
+              — <strong>Intended/out-of-scope use</strong> (liability limiting — if deployer uses model outside documented scope, liability shifts to them).<br>
+              — <strong>Limitations section</strong> (EEOC can require evidence that disparate impact was identified and addressed).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="topic-group">
+      <div class="topic-label"><span class="topic-label-dot" style="background:var(--amber)"></span>Governance Policy &amp; Human-AI Collaboration</div>
+
+      <div class="concept amber">
+        <h4>AI Accountability Frameworks — Comparison</h4>
+        <ul>
+          <li><strong>NIST AI RMF (2023):</strong> Four functions — GOVERN (culture, policies), MAP (context, risks), MEASURE (analysis, benchmarking), MANAGE (prioritise, respond, recover). Voluntary, widely adopted US baseline.</li>
+          <li><strong>ISO/IEC 42001 (2023):</strong> First international standard for AI management systems. PDCA cycle (Plan, Do, Check, Act) applied to AI. Certification possible. Voluntary unless referenced in regulation.</li>
+          <li><strong>EU AI Act:</strong> Legally binding. Risk tiers with conformity assessments. Third-party audits for high-risk systems.</li>
+          <li><strong>OECD AI Principles:</strong> Inclusive growth, human-centred values, transparency, robustness, accountability. Adopted by 46+ countries. Non-binding.</li>
+        </ul>
+        <p style="margin-top:8px;"><strong>Key exam distinction:</strong> Know which frameworks are voluntary vs binding and which require third-party audits.</p>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-mcq">MCQ</span>
+              <span class="q-badge badge-easy">Easy</span>
+            </div>
+            <div class="q-text">Which of the following AI governance frameworks is legally binding on organisations deploying AI systems in the European Union?</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="q-options">
+              <div class="q-opt wrong">A. NIST AI Risk Management Framework</div>
+              <div class="q-opt wrong">B. OECD AI Principles</div>
+              <div class="q-opt correct">C. EU Artificial Intelligence Act</div>
+              <div class="q-opt wrong">D. ISO/IEC 42001</div>
+            </div>
+            <div class="answer-label">Explanation</div>
+            <div class="answer-box">The <strong>EU AI Act</strong> (entered into force August 2024) is the only legally binding regulation among these options. NIST AI RMF is a voluntary US framework. OECD AI Principles are non-binding policy guidelines. ISO/IEC 42001 is a voluntary management system standard — no legal obligation without regulatory reference.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept rose" style="margin-top:12px;">
+        <h4>Human Oversight Requirements — HITL vs HOTL vs HIC</h4>
+        <ul>
+          <li><strong>Human-in-the-loop (HITL):</strong> Human reviews/approves every AI decision. Highest accountability, lowest throughput. Required for highest-stakes, low-volume decisions.</li>
+          <li><strong>Human-on-the-loop (HOTL):</strong> Human monitors and can intervene but system runs automatically. EU AI Act minimum standard for high-risk AI. Override capability required.</li>
+          <li><strong>Human-in-command (HIC):</strong> Humans retain ultimate authority to shut down or override at the strategic level. Applies to AI systems with societal-scale impact.</li>
+        </ul>
+        <p style="margin-top:8px;">Which is required depends on: consequence severity, reversibility of decisions, regulatory mandate, and AI reliability evidence. <strong>Governance must specify which level is required</strong>, not just say "human oversight".</p>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-scenario">Scenario</span>
+              <span class="q-badge badge-hard">Hard</span>
+            </div>
+            <div class="q-text">A bank's AI system automatically approves or denies credit card applications in 200ms with no human in the loop, processing 50,000 applications per day. The compliance team says this violates GDPR Art. 22 and EU AI Act. Design a minimum viable human oversight architecture that preserves operational speed while achieving compliance.</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="answer-label">Model Answer</div>
+            <div class="answer-box">
+              <strong>Compliance analysis:</strong> GDPR Art. 22 prohibits solely automated decisions with significant legal effects unless: explicit consent, contract necessity, or member state law. Credit decisions qualify. EU AI Act classifies credit scoring as high-risk (Annex III), requiring human oversight and right to explanation.<br><br>
+              <strong>Minimum viable architecture:</strong><br>
+              1. <strong>Tiered automation by confidence:</strong><br>
+              — High-confidence approvals (&gt;95th percentile positive threshold): auto-approve with logged audit trail; satisfy "contract necessity" exception under GDPR Art. 22(2)(b).<br>
+              — High-confidence denials (&lt;5th percentile): auto-deny but trigger mandatory human review queue within 24h; applicant informed of right to request human review (GDPR Art. 22(3)).<br>
+              — Mid-range decisions: route to human reviewers (HOTL model).<br><br>
+              2. <strong>Explanation on demand:</strong> SHAP-based explanations of feature contributions for every decision, surfaceable to applicants requesting human review.<br><br>
+              3. <strong>Override mechanism:</strong> Human reviewers can override any auto-decision within a review window; reversals logged for model retraining signal.<br><br>
+              4. <strong>Audit logging:</strong> Full decision log with model version, input features (no raw PII), output, confidence score — satisfies EU AI Act Art. 12 logging requirement.<br><br>
+              5. <strong>Applicant communication:</strong> Denial letters must state: (a) it was automated, (b) right to request human review, (c) key factors — satisfying GDPR Art. 22(3) and EU AI Act explainability.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SECTION 3 ══════════ -->
+  <section id="s3">
+    <div class="section-header">
+      <div class="section-num">03 / 04</div>
+      <div class="section-title">Fairness and Inclusion in AI Systems</div>
+      <p class="section-desc">Mathematical fairness definitions, bias sources and mitigation techniques at each pipeline stage, inclusive design principles, and stakeholder considerations for vulnerable populations.</p>
+    </div>
+
+    <div class="topic-group">
+      <div class="topic-label"><span class="topic-label-dot" style="background:var(--teal)"></span>Fairness Concepts &amp; Mitigation</div>
+
+      <div class="concept teal">
+        <h4>Individual vs Group Fairness</h4>
+        <p><strong>Individual fairness (Dwork et al., 2012):</strong> Similar individuals should receive similar outcomes. Formally: d(x,y) small ⟹ |f(x)−f(y)| small, where d is a task-specific similarity metric. Requires defining "similar" — which is itself contested and domain-dependent.</p>
+        <p style="margin-top:8px;"><strong>Group fairness definitions (mutually incompatible when base rates differ):</strong></p>
+        <ul>
+          <li><strong>Demographic parity:</strong> P(Ŷ=1|A=0) = P(Ŷ=1|A=1) — equal positive prediction rates across groups, regardless of base rates.</li>
+          <li><strong>Equalized odds (Hardt et al., 2016):</strong> Equal TPR AND FPR across groups.</li>
+          <li><strong>Equal opportunity:</strong> Equal TPR only. Weaker condition than equalized odds.</li>
+          <li><strong>Calibration:</strong> P(Y=1|Ŷ=p, A=a) = p for all groups — predicted probabilities have the same meaning across groups.</li>
+        </ul>
+        <p style="margin-top:8px;"><strong>Impossibility result (Chouldechova 2017; Kleinberg et al. 2017):</strong> When base rates differ between groups, demographic parity, equalized odds, and calibration cannot all be satisfied simultaneously. This is mathematically provable — not a design failure. Governance must choose which criterion to prioritise with explicit justification.</p>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-mcq">MCQ</span>
+              <span class="q-badge badge-hard">Hard</span>
+            </div>
+            <div class="q-text">A recidivism prediction model has equal calibration across racial groups but different false positive rates. A critic argues this is unfair. The model builder argues it is fair because it is calibrated. Which best characterises this disagreement?</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="q-options">
+              <div class="q-opt wrong">A. One party is mathematically wrong — only one fairness metric can apply to a given model</div>
+              <div class="q-opt wrong">B. The disagreement is purely ethical and has no mathematical content</div>
+              <div class="q-opt correct">C. Both invoke valid but incompatible fairness criteria; the Chouldechova impossibility theorem shows these cannot simultaneously hold when base rates differ</div>
+              <div class="q-opt wrong">D. The model should use demographic parity instead, which resolves both concerns</div>
+            </div>
+            <div class="answer-label">Explanation</div>
+            <div class="answer-box">This is the <strong>COMPAS controversy</strong> (ProPublica vs Northpointe). ProPublica measured equalized odds (false positive rates by race) and found disparity. Northpointe measured calibration and found it equal. <strong>Chouldechova (2017)</strong> proved these are mathematically incompatible when base rates differ between groups — which they do in US recidivism data due to structural factors. Neither party is wrong; they measure different, legitimately valid fairness criteria. The governance challenge is choosing which to prioritise and on what ethical grounds.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept" style="margin-top:12px;">
+        <h4>Fairness Interventions: Pre-, In-, Post-Processing</h4>
+        <ul>
+          <li><strong>Pre-processing (data-level):</strong> Reweighing (IBM AIF360), disparate impact remover, learning fair representations (LFR). Modifies training data before model training. Advantage: upstream fix, no model constraints. Limitation: may lose predictive signal.</li>
+          <li><strong>In-processing (training-level):</strong> Adversarial debiasing (Zhang et al., 2018) — adversary penalises predictions correlated with protected attribute. Fairness constraints in the optimisation objective (Zafar et al., 2017). Requires retraining from scratch.</li>
+          <li><strong>Post-processing (output-level):</strong> Equalized odds post-processing (Hardt et al., 2016) — adjusts decision thresholds per group. Advantage: applicable to black-box models. <strong>Key risk:</strong> may not be legally permissible if threshold differs by protected attribute (disparate treatment).</li>
+        </ul>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-code">Coding</span>
+              <span class="q-badge badge-hard">Hard</span>
+            </div>
+            <div class="q-text">Write Python code to compute Demographic Parity Difference and Equalized Odds Difference for two groups, without using AIF360. Then identify which group is privileged.</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="answer-label">Solution</div>
+            <pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Sample data: y_true, y_pred, sensitive attribute A (0=unprivileged, 1=privileged)</span>
+y_true = np.array([<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">1</span>])
+y_pred = np.array([<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">1</span>])
+A      = np.array([<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">0</span>])
+
+<span class="kw">def</span> <span class="fn">group_metrics</span>(y_t, y_p, a_val, A):
+    mask = (A == a_val)
+    yt, yp = y_t[mask], y_p[mask]
+    pos_pred_rate = np.mean(yp)           <span class="cm"># P(Ŷ=1 | A=a)</span>
+    tp = np.sum((yt == <span class="nm">1</span>) & (yp == <span class="nm">1</span>))
+    fp = np.sum((yt == <span class="nm">0</span>) & (yp == <span class="nm">1</span>))
+    fn = np.sum((yt == <span class="nm">1</span>) & (yp == <span class="nm">0</span>))
+    tn = np.sum((yt == <span class="nm">0</span>) & (yp == <span class="nm">0</span>))
+    tpr = tp / (tp + fn) <span class="kw">if</span> (tp + fn) > <span class="nm">0</span> <span class="kw">else</span> <span class="nm">0</span>
+    fpr = fp / (fp + tn) <span class="kw">if</span> (fp + tn) > <span class="nm">0</span> <span class="kw">else</span> <span class="nm">0</span>
+    <span class="kw">return</span> {<span class="st">"pos_pred_rate"</span>: pos_pred_rate, <span class="st">"tpr"</span>: tpr, <span class="st">"fpr"</span>: fpr}
+
+m0 = group_metrics(y_true, y_pred, <span class="nm">0</span>, A)  <span class="cm"># unprivileged</span>
+m1 = group_metrics(y_true, y_pred, <span class="nm">1</span>, A)  <span class="cm"># privileged</span>
+
+<span class="cm"># Demographic Parity Difference: positive = privileged group advantaged</span>
+DPD = m1[<span class="st">"pos_pred_rate"</span>] - m0[<span class="st">"pos_pred_rate"</span>]
+
+<span class="cm"># Equalized Odds Difference: max of |TPR diff| and |FPR diff|</span>
+EOD = max(abs(m1[<span class="st">"tpr"</span>] - m0[<span class="st">"tpr"</span>]), abs(m1[<span class="st">"fpr"</span>] - m0[<span class="st">"fpr"</span>]))
+
+<span class="fn">print</span>(<span class="st">f"Group A=1: pos_rate={m1['pos_pred_rate']:.2f}, TPR={m1['tpr']:.2f}, FPR={m1['fpr']:.2f}"</span>)
+<span class="fn">print</span>(<span class="st">f"Group A=0: pos_rate={m0['pos_pred_rate']:.2f}, TPR={m0['tpr']:.2f}, FPR={m0['fpr']:.2f}"</span>)
+<span class="fn">print</span>(<span class="st">f"Demographic Parity Difference (DPD): {DPD:.3f}"</span>)
+<span class="fn">print</span>(<span class="st">f"  → {'A=1 is privileged' if DPD > 0 else 'A=0 is privileged'}"</span>)
+<span class="fn">print</span>(<span class="st">f"Equalized Odds Difference (EOD): {EOD:.3f}"</span>)
+<span class="fn">print</span>(<span class="st">f"  → 0 = perfectly fair; |value| > 0.1 typically considered significant"</span>)</code></pre>
+            <div class="answer-label">Key Interpretation</div>
+            <div class="answer-box"><strong>DPD = 0</strong> means demographic parity. <strong>DPD &gt; 0</strong> means group A=1 receives more positive predictions — A=1 is the privileged group. <strong>EOD = 0</strong> means equalized odds. These will generally not both be zero simultaneously when base rates differ — demonstrating the impossibility result in practice. In Workera coding questions, you are expected to identify which group is privileged and interpret the magnitude of the disparity.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept blue" style="margin-top:12px;">
+        <h4>Privileged vs Unprivileged Attribute Values + Proxy Features</h4>
+        <p><strong>Privileged group:</strong> The group that historically received favourable outcomes or for which the model performs better. <strong>Protected attribute:</strong> A feature that defines group membership and should not drive decisions (race, gender, age, disability, religion). <strong>Proxy features:</strong> Variables correlated with protected attributes (zip code → race; name → gender/ethnicity). Models trained without explicit protected attributes can still learn discrimination via proxies. Detecting proxies requires correlation analysis and permutation tests of feature importance.</p>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-scenario">Scenario</span>
+              <span class="q-badge badge-med">Medium</span>
+            </div>
+            <div class="q-text">A credit model excludes race as a feature but includes zip code and first name. A fairness audit finds significant racial disparity in loan approval rates. What is the mechanism and what remediation is most appropriate?</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="answer-label">Model Answer</div>
+            <div class="answer-box">
+              <strong>Mechanism — proxy discrimination via redlining and name-based inference:</strong><br>
+              — <strong>Zip code</strong> is a well-documented proxy for race in the US due to historical residential segregation (redlining). High-minority zip codes correlate with lower credit scores and higher default rates due to structural economic factors — the model indirectly encodes race.<br>
+              — <strong>First name:</strong> Research (Bertrand &amp; Mullainathan 2004) shows first names are statistically predictive of race and ethnicity. If used as a feature, the model is effectively using race as a proxy.<br><br>
+              <strong>Legal implication:</strong> Even without explicit use of race, this constitutes <strong>disparate impact</strong> discrimination under ECOA/Reg B and Fair Housing Act — intent is not required, only statistical adverse impact on a protected class.<br><br>
+              <strong>Remediation:</strong><br>
+              1. <strong>Remove first name entirely</strong> — no legitimate credit-relevant signal justifies the racial proxy risk.<br>
+              2. <strong>Apply disparate impact remover</strong> (pre-processing) to zip code features — transform to reduce racial correlation while preserving credit-relevant variation.<br>
+              3. <strong>Re-audit</strong> using demographic parity and equalized odds metrics disaggregated by race after remediation.<br>
+              4. <strong>Causal analysis:</strong> Use causal fairness framework to identify whether zip code's predictive power is due to individual creditworthiness vs systemic discrimination artifacts.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="topic-group">
+      <div class="topic-label"><span class="topic-label-dot" style="background:var(--green)"></span>Inclusive Design &amp; Stakeholder Consideration</div>
+
+      <div class="concept green">
+        <h4>Setting Fairness Goals Early in System Design</h4>
+        <p>Fairness retrofitted post-deployment is significantly harder and more costly than designed-in fairness. <strong>Design-phase requirements:</strong> (1) Define which fairness metric is appropriate for this use case and why. (2) Identify all affected stakeholder groups, including non-users. (3) Document which protected attributes are relevant. (4) Set measurable fairness thresholds (e.g., "DPD ≤ 0.05") as acceptance criteria. (5) Plan for fairness testing in QA pipeline. (6) Allocate explicit budget and timeline — it must not be squeezed out by feature delivery pressure. <strong>Participatory design:</strong> include representatives of potentially affected communities in design reviews.</p>
+      </div>
+
+      <div class="concept" style="margin-top:12px;">
+        <h4>Bias Introduced by Stakeholders</h4>
+        <p>Bias is not only in data — it enters through humans at every stage.</p>
+        <ul>
+          <li><strong>Annotation bias:</strong> Labellers encode cultural assumptions (toxicity labels vary by annotator race — Sap et al. 2019).</li>
+          <li><strong>Specification bias:</strong> Problem framing by product managers encodes assumptions (e.g., "recidivism" as prediction target bakes in a particular theory of justice).</li>
+          <li><strong>Evaluation bias:</strong> Benchmarks fail to cover underrepresented groups (face recognition benchmarks historically lacked dark-skinned females — Buolamwini &amp; Gebru 2018).</li>
+          <li><strong>Deployment bias:</strong> System used in context it was not designed for.</li>
+          <li><strong>Feedback loop bias:</strong> Model outputs become future training data, amplifying initial biases.</li>
+        </ul>
+        <p style="margin-top:8px;"><strong>Mitigation:</strong> diverse teams, blind annotation, adversarial testing on underrepresented groups.</p>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-sub">Subjective</span>
+              <span class="q-badge badge-hard">Hard</span>
+            </div>
+            <div class="q-text">You are the AI lead on a medical diagnostic tool designed to detect skin cancer. The training dataset is 85% images from patients with light skin tones. Describe (a) the specific fairness risks, (b) three technical interventions, and (c) two organisational/process changes required before deployment.</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="answer-label">Model Answer</div>
+            <div class="answer-box">
+              <strong>(a) Specific fairness risks:</strong><br>
+              — <strong>Performance disparity:</strong> Model will have lower sensitivity (TPR) on dark-skin-tone images — higher false negative rate means missed cancers disproportionately affecting patients of colour. Lower TPR = preventable deaths.<br>
+              — <strong>Measurement bias:</strong> Melanoma presents differently on darker skin; features learned from light-skin training will not generalise. Not fixable by calibration alone.<br>
+              — <strong>Feedback loop:</strong> If deployed, patients of colour receive worse diagnoses → fewer confirmed cases in dark skin → future retraining reinforces underrepresentation.<br><br>
+              <strong>(b) Three technical interventions:</strong><br>
+              1. <strong>Targeted data collection:</strong> Partner with dermatology clinics serving diverse populations. Stratified sampling to ensure each Fitzpatrick skin type (I–VI) meets minimum representation threshold.<br>
+              2. <strong>Stratified fairness evaluation:</strong> Measure TPR, FPR, AUC disaggregated by Fitzpatrick type before deployment. Set minimum TPR ≥ 0.85 as hard deployment gate for each subgroup.<br>
+              3. <strong>Domain adversarial training:</strong> Train an adversarial component ensuring skin-tone features do not dominate lesion classification — force the model to learn tone-invariant pathological features.<br><br>
+              <strong>(c) Two organisational changes:</strong><br>
+              1. <strong>Diverse clinical validation cohort:</strong> Pre-deployment clinical trial explicitly stratified by skin tone — presented to FDA as evidence of generalisability.<br>
+              2. <strong>Ongoing post-market surveillance:</strong> Monitor real-world TPR by skin tone after deployment. Establish a threshold (e.g., TPR gap &gt;10pp vs light skin) triggering automatic suspension of the tool and mandatory retraining — written into deployment contracts with hospitals.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-wrap">
+        <div class="q-block">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-mcq">MCQ</span>
+              <span class="q-badge badge-med">Medium</span>
+            </div>
+            <div class="q-text">A team builds an NLP model for mental health support. Which represents the MOST serious failure of inclusive design?</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="q-options">
+              <div class="q-opt wrong">A. The model was not tested on users in time zones outside the US</div>
+              <div class="q-opt correct">B. The training data consisted entirely of English-language therapy transcripts from Western clinical settings, with no representation of non-Western cultural expressions of mental distress</div>
+              <div class="q-opt wrong">C. The UI uses a blue colour scheme not tested for colour-blindness</div>
+              <div class="q-opt wrong">D. The model achieved 90% accuracy overall but was only tested on an 80/20 train-test split</div>
+            </div>
+            <div class="answer-label">Explanation</div>
+            <div class="answer-box">Mental health expression is <strong>deeply culturally situated</strong>. Depression manifests as somatic complaints in many South Asian and East Asian cultural contexts, not as the "sad mood" pattern dominant in Western therapy transcripts. A model trained only on Western clinical language will systematically fail to recognise mental distress in non-Western users — at precisely the moment when accurate recognition is critical (suicide risk assessment, crisis detection). This is a <strong>vulnerable subgroup representation failure</strong> with direct harm potential. The other options are important accessibility and methodology issues but do not approach this severity.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SECTION 4 ══════════ -->
+  <section id="s4">
+    <div class="section-header">
+      <div class="section-num">04 / 04</div>
+      <div class="section-title">Quick Reference</div>
+      <p class="section-desc">High-density reference for the day before the test. All distinctions Workera's adaptive algorithm probes at higher difficulty levels. Memorise these cold.</p>
+    </div>
+
+    <div class="topic-group">
+      <div class="topic-label"><span class="topic-label-dot" style="background:var(--amber)"></span>Regulatory Frameworks — Key Distinctions</div>
+      <div class="ref-grid">
+        <div class="ref-card">
+          <h5>Legally Binding</h5>
+          <ul>
+            <li><strong>EU AI Act</strong> — risk-tiered, conformity assessments</li>
+            <li><strong>GDPR</strong> — data protection, automated decisions</li>
+            <li><strong>CCPA/CPRA</strong> — California consumer privacy</li>
+            <li><strong>HIPAA</strong> — US healthcare data</li>
+            <li><strong>ECOA / Title VII</strong> — US anti-discrimination</li>
+            <li><strong>NYC Local Law 144</strong> — AI hiring bias audits</li>
+            <li><strong>India DPDP Act 2023</strong> — consent-first framework</li>
+          </ul>
+        </div>
+        <div class="ref-card">
+          <h5>Voluntary / Best Practice</h5>
+          <ul>
+            <li><strong>NIST AI RMF</strong> — Map, Measure, Manage, Govern</li>
+            <li><strong>OECD AI Principles</strong> — 46+ countries, non-binding</li>
+            <li><strong>ISO/IEC 42001</strong> — AI management system standard</li>
+            <li><strong>UNESCO AI Ethics</strong> — non-binding recommendations</li>
+            <li><strong>Model Cards</strong> — de-facto industry norm</li>
+            <li><strong>Datasheets for Datasets</strong> — research standard</li>
+          </ul>
+        </div>
+        <div class="ref-card">
+          <h5>EU AI Act Risk Tiers</h5>
+          <ul>
+            <li><strong>Unacceptable (banned):</strong> social scoring, real-time biometric surveillance, subliminal manipulation</li>
+            <li><strong>High risk:</strong> hiring, credit, medical, law enforcement, education — conformity assessment required</li>
+            <li><strong>Limited risk:</strong> chatbots (must disclose), deepfakes (must label)</li>
+            <li><strong>Minimal risk:</strong> spam filters, games — no obligations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="topic-group">
+      <div class="topic-label"><span class="topic-label-dot" style="background:var(--teal)"></span>Fairness Metrics — Formula Reference</div>
+      <div class="formula-block">
+<span class="fl">Demographic Parity</span>:       <span class="fv">P(Ŷ=1|A=0) = P(Ŷ=1|A=1)</span>
+  DPD = P(Ŷ=1|A=1) - P(Ŷ=1|A=0)  <span class="fc">[ 0 = fair ]</span>
+
+<span class="fl">Equal Opportunity</span>:         <span class="fv">TPR(A=0) = TPR(A=1)</span>
+  TPR = P(Ŷ=1 | Y=1, A=a)   <span class="fc">[ recall per group ]</span>
+
+<span class="fl">Equalized Odds</span>:            <span class="fv">TPR(A=0)=TPR(A=1)  AND  FPR(A=0)=FPR(A=1)</span>
+  <span class="fc">[ stronger than equal opportunity ]</span>
+
+<span class="fl">Calibration</span>:              <span class="fv">P(Y=1 | Ŷ=p, A=0) = P(Y=1 | Ŷ=p, A=1) = p</span>
+  <span class="fc">[ predicted probabilities mean the same across groups ]</span>
+
+<span class="fl">Disparate Impact Ratio</span>:    <span class="fv">P(Ŷ=1|A=0) / P(Ŷ=1|A=1)</span>
+  <span class="fw">EEOC 80% rule: ratio &lt; 0.8 triggers adverse impact concern</span>
+
+<span class="fl">Individual Fairness</span>:       <span class="fv">d_task(x,y) small ⟹ |f(x)−f(y)| small</span>
+  <span class="fc">[ requires defining task-specific metric d — the hard part ]</span>
+
+<span class="fw">IMPOSSIBILITY THEOREM (Chouldechova 2017; Kleinberg 2017):</span>
+  When base rates <span class="fv">P(Y=1|A=0) ≠ P(Y=1|A=1)</span>,
+  you CANNOT simultaneously satisfy:
+  demographic parity + equalized odds + calibration</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="topic-group">
+      <div class="topic-label"><span class="topic-label-dot" style="background:var(--rose)"></span>Exam Traps — Distinctions the Algorithm Probes at Higher Difficulty</div>
+
+      <div class="q-block" style="background:var(--bg2);">
+        <div class="q-header" onclick="toggleQ(this)">
+          <div class="q-meta">
+            <span class="q-badge badge-class">Classification</span>
+            <span class="q-badge badge-hard">Hard</span>
+          </div>
+          <div class="q-text">Classify each fairness intervention by stage (pre/in/post-processing) and state whether it may constitute disparate treatment: (a) Reweighing training samples; (b) Adversarial discriminator during training; (c) Different decision thresholds by gender; (d) Training on synthetic data matching population demographics.</div>
+          <span class="q-chevron">▼</span>
+        </div>
+        <div class="q-body">
+          <div class="answer-label">Answer</div>
+          <div class="answer-box">
+            <strong>(a) Pre-processing — Reweighing.</strong> No disparate treatment: intervention is in data preparation, not in decision-making based on protected attribute at inference time.<br><br>
+            <strong>(b) In-processing — Adversarial debiasing.</strong> No disparate treatment: constrains model learning without applying different rules to individuals at inference time.<br><br>
+            <strong>(c) Post-processing — Threshold adjustment. HIGH disparate treatment risk.</strong> Explicitly applying different decision thresholds to individuals based on gender at inference time = using gender to determine outcome = potential disparate treatment under Title VII, ECOA, EU AI Act. Legally permissible only in specific affirmative action contexts with legal authority. Most legally contentious fairness intervention — flag for legal review.<br><br>
+            <strong>(d) Pre-processing — Synthetic data augmentation.</strong> No disparate treatment: creating balanced training data does not involve making decisions about individuals based on protected attributes.
+          </div>
+        </div>
+      </div>
+
+      <div class="q-wrap" style="margin-top:10px;">
+        <div class="q-block" style="background:var(--bg2);">
+          <div class="q-header" onclick="toggleQ(this)">
+            <div class="q-meta">
+              <span class="q-badge badge-scenario">Scenario</span>
+              <span class="q-badge badge-hard">Hard</span>
+            </div>
+            <div class="q-text">A governance committee reviews an AI system that auto-assigns performance scores to employees. The HR director says "we just need to document it." Legal counsel says "we need human oversight." The data scientist says "92% accuracy — we're fine." Identify the governance gaps each perspective misses.</div>
+            <span class="q-chevron">▼</span>
+          </div>
+          <div class="q-body">
+            <div class="answer-label">Model Answer</div>
+            <div class="answer-box">
+              <strong>HR Director — "just document it":</strong> Documentation is necessary but not sufficient. Missing: (1) GDPR Art. 22 requires human review availability for automated decisions with significant effects — employment performance scoring clearly qualifies. (2) Documenting a flawed system does not make it compliant; it only provides an audit trail for liability. (3) A risk register must include mitigation actions, not just record the system's existence.<br><br>
+              <strong>Legal Counsel — "human oversight" without specifics:</strong> Correct diagnosis but incomplete. Missing: (1) Which type? HITL is operationally impractical at scale; HOTL may be sufficient. (2) What is the trigger for human intervention — statistical anomalies, employee appeals, demographic patterns? (3) Who is accountable for human reviewer decisions — oversight without accountability is theatre.<br><br>
+              <strong>Data Scientist — "92% accuracy is fine":</strong> Multiple critical gaps: (1) Aggregate accuracy says nothing about fairness — model could be 99% accurate on majority groups and 70% on protected groups. (2) 8% error rate could mean thousands of employees unfairly rated — the consequence-to-error relationship matters enormously. (3) No mention of which fairness metric was evaluated. (4) No mention of explainability — can scores be explained to employees? Required for meaningful human oversight and legal redress. (5) No distributional shift testing.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:28px;">
+        <div class="concept rose">
+          <h4>Key Conceptual Traps — Commit These to Memory</h4>
+          <ul>
+            <li><strong>Disparate treatment vs disparate impact:</strong> Treatment = intentional use of protected attribute. Impact = facially neutral policy with disproportionate effect. Both are illegal under US anti-discrimination law, but different legal tests apply.</li>
+            <li><strong>Privacy vs confidentiality vs anonymity:</strong> Privacy = right to control one's information. Confidentiality = obligation not to disclose to others. Anonymity = inability to link data to identity. De-identified ≠ anonymous — re-identification is possible.</li>
+            <li><strong>Post-processing fairness trap:</strong> Post-processing (different thresholds per group) can achieve group fairness but constitutes disparate treatment — legally risky. Pre/in-processing avoid this.</li>
+            <li><strong>Provider vs deployer (EU AI Act):</strong> Provider = places AI on market. Deployer = uses AI under own authority for own purposes. A company using a third-party model API is a deployer; a company that customises and resells it becomes a provider.</li>
+            <li><strong>GDPR Art. 22 exceptions:</strong> Automated decisions are permitted if: (1) necessary for contract, (2) authorised by member state law, (3) explicit consent. Without exception, human review must be available on request.</li>
+            <li><strong>Model card vs datasheet:</strong> Model card describes the model (performance, limitations, intended use). Datasheet describes the dataset (composition, collection, known biases). Both should exist but serve different purposes.</li>
+            <li><strong>HITL vs HOTL vs HIC:</strong> HITL = every decision reviewed. HOTL = monitors with override capability. HIC = strategic control to shut down. Governance must specify which is required — not just say "human oversight".</li>
+            <li><strong>Calibration ≠ fairness:</strong> A model can be perfectly calibrated and still be deeply unfair by equalized odds or demographic parity standards. COMPAS is the canonical example.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <a href="#overview" class="back-top">↑ Back to top</a>
+  </section>
+
+</div>
+
+<script>
+  function toggleQ(header) {
+    const block = header.closest('.q-block');
+    const body = header.nextElementSibling;
+    const isOpen = block.classList.contains('open');
+    block.classList.toggle('open', !isOpen);
+    body.style.display = isOpen ? 'none' : 'block';
+  }
+
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    document.getElementById('progress-bar').style.width = pct + '%';
+  });
+
+  // Active nav highlighting
+  const sections = document.querySelectorAll('section[id], header[id]');
+  const navTabs = document.querySelectorAll('.nav-tab');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navTabs.forEach(t => t.classList.remove('active'));
+        const match = document.querySelector(`.nav-tab[href="#${entry.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
